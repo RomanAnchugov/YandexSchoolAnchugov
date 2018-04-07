@@ -8,13 +8,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.yandex.disk.rest.Credentials;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.romananchugov.yandexschoolanchugov.service.GalleryItem;
@@ -28,6 +32,12 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     private static final String TAG = "GalleryListFragment";
 
     private Credentials credentials;
+
+
+
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
+    private List<GalleryItem> galleryItems;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,6 +55,14 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.gallery_list_fragment, container, false);
+
+        galleryItems = new ArrayList<>();
+        recyclerView = v.findViewById(R.id.gallery_recycler_view);
+        adapter  = new Adapter();
+
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        recyclerView.setAdapter(adapter);
+
         getLoaderManager().initLoader(0, null, this);
         return v;
     }
@@ -62,10 +80,54 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         for(GalleryItem item:galleryItemList){
             Log.i(TAG, "onLoadFinished: item " + item.toString());
         }
+        setData(galleryItemList);
+
     }
 
     @Override
     public void onLoaderReset(Loader<List<GalleryItem>> loader) {
 
     }
+
+    public void setData(List<GalleryItem> galleryItemList){
+
+        galleryItems.clear();
+
+        if(galleryItemList != null){
+            galleryItems.addAll(galleryItemList);
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
+    private class ViewHolder extends RecyclerView.ViewHolder{
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    private class Adapter extends RecyclerView.Adapter<ViewHolder>{
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            ImageView imageView = (ImageView) LayoutInflater.from(getContext())
+                    .inflate(R.layout.gallery_item_view, parent, false);
+
+            return new ViewHolder(imageView);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return galleryItems.size();
+        }
+
+    }
+
+
 }

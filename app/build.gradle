@@ -28,4 +28,5 @@ dependencies {
     implementation 'com.yandex.android:disk-restapi-sdk:1.0'
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
 }

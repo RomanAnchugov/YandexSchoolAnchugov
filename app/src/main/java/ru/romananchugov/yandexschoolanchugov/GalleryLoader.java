@@ -59,21 +59,6 @@ public class GalleryLoader extends AsyncTaskLoader<List<GalleryItem>> {
 
             do {
                 Log.i(TAG, "loadInBackground: gallerItemList.size = " + size );
-//                Resource resource = client.getResources(new ResourcesArgs.Builder()
-//                        .setPath("/")
-//                        .setSort(ResourcesArgs.Sort.name)
-//                        .setLimit(ITEMS_PER_REQUEST)
-//                        .setOffset(offset)
-//                        .setParsingHandler(new ResourcesHandler() {
-//                            @Override
-//                            public void handleItem(Resource item) {
-//                                if(item != null && item.getMediaType() != null
-//                                        && item.getMediaType().contains("image")){
-//                                    galleryItemList.add(new GalleryItem(item));
-//                                }
-//                            }
-//                        })
-//                        .build());
 
                 ResourceList resourceList = client.getFlatResourceList(new ResourcesArgs.Builder()
                         .setLimit(ITEMS_PER_REQUEST)
@@ -97,7 +82,6 @@ public class GalleryLoader extends AsyncTaskLoader<List<GalleryItem>> {
                     }
                 });
 
-                //size = resource.getResourceList().getItems().size();
                 size = resourceList.getItems().size();
 
             } while (!hasCancelled && size >= ITEMS_PER_REQUEST);
