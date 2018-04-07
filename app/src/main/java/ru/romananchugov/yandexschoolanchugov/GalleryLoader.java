@@ -1,14 +1,20 @@
 package ru.romananchugov.yandexschoolanchugov;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
 import com.yandex.disk.rest.Credentials;
+import com.yandex.disk.rest.ResourcesArgs;
+import com.yandex.disk.rest.ResourcesHandler;
 import com.yandex.disk.rest.RestClient;
-import com.yandex.disk.rest.exceptions.ServerIOException;
+import com.yandex.disk.rest.exceptions.ServerException;
+import com.yandex.disk.rest.json.Resource;
+import com.yandex.disk.rest.json.ResourceList;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.romananchugov.yandexschoolanchugov.service.GalleryItem;
@@ -21,11 +27,18 @@ import ru.romananchugov.yandexschoolanchugov.service.RestClientUtil;
 public class GalleryLoader extends AsyncTaskLoader<List<GalleryItem>> {
     private static final String TAG = "GalleryLoader";
 
+    private static final int ITEMS_PER_REQUEST = 10;
+
+    private Handler handler;
     private Credentials credentials;
+    private boolean hasCancelled;
+
+    private List<GalleryItem> galleryItemList;
 
     public GalleryLoader(Context context, Credentials credentials) {
         super(context);
         this.credentials = credentials;
+        handler = new Handler();
     }
 
     @Override
@@ -35,17 +48,72 @@ public class GalleryLoader extends AsyncTaskLoader<List<GalleryItem>> {
 
     @Override
     public List<GalleryItem> loadInBackground() {
+        galleryItemList = new ArrayList<>();
+        hasCancelled = false;
+
+        int offset = 0;
         RestClient client = null;
-        client = RestClientUtil.getInstance(credentials);
         try {
-            Log.i(TAG, "loadInBackground: " + client.getDiskInfo());
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.i(TAG, "loadInBackground: " + e.getMessage());
-        } catch (ServerIOException e) {
-            e.printStackTrace();
-            Log.i(TAG, "loadInBackground: " + e.getMessage());
+            client = RestClientUtil.getInstance(credentials);
+            int size = 0;
+
+            do {
+                Log.i(TAG, "loadInBackground: gallerItemList.size = " + size );
+//                Resource resource = client.getResources(new ResourcesArgs.Builder()
+//                        .setPath("/")
+//                        .setSort(ResourcesArgs.Sort.name)
+//                        .setLimit(ITEMS_PER_REQUEST)
+//                        .setOffset(offset)
+//                        .setParsingHandler(new ResourcesHandler() {
+//                            @Override
+//                            public void handleItem(Resource item) {
+//                                if(item != null && item.getMediaType() != null
+//                                        && item.getMediaType().contains("image")){
+//                                    galleryItemList.add(new GalleryItem(item));
+//                                }
+//                            }
+//                        })
+//                        .build());
+
+                ResourceList resourceList = client.getFlatResourceList(new ResourcesArgs.Builder()
+                        .setLimit(ITEMS_PER_REQUEST)
+                        .setMediaType("image")
+                        .setSort(ResourcesArgs.Sort.created)
+                        .setOffset(offset)
+                        .setParsingHandler(new ResourcesHandler() {
+                            @Override
+                            public void handleItem(Resource item) {
+                                galleryItemList.add(new GalleryItem(item));
+                            }
+                        })
+                        .build());
+
+                offset += ITEMS_PER_REQUEST;
+
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        deliverResult(new ArrayList<>(galleryItemList));
+                    }
+                });
+
+                //size = resource.getResourceList().getItems().size();
+                size = resourceList.getItems().size();
+
+            } while (!hasCancelled && size >= ITEMS_PER_REQUEST);
+
+            return galleryItemList;
+
+        } catch (IOException | ServerException ex) {
+            Log.d(TAG, "loadInBackground", ex);
+
         }
-        return null;
+        return galleryItemList;
+    }
+
+    @Override
+    protected void onReset() {
+        super.onReset();
+        hasCancelled = true;
     }
 }

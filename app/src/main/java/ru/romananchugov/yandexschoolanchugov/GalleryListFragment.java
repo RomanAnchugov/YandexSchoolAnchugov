@@ -57,8 +57,11 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onLoadFinished(Loader<List<GalleryItem>> loader, List<GalleryItem> galleryItems) {
+    public void onLoadFinished(Loader<List<GalleryItem>> loader, List<GalleryItem> galleryItemList) {
         Log.i(TAG, "onLoadFinished: load finished");
+        for(GalleryItem item:galleryItemList){
+            Log.i(TAG, "onLoadFinished: item " + item.toString());
+        }
     }
 
     @Override
