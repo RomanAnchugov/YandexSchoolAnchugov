@@ -16,11 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.yandex.disk.rest.Credentials;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.romananchugov.yandexschoolanchugov.service.Credentials;
 import ru.romananchugov.yandexschoolanchugov.service.GalleryItem;
 
 /**
@@ -76,7 +75,6 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<List<GalleryItem>> loader, List<GalleryItem> galleryItemList) {
-        Log.i(TAG, "onLoadFinished: load finished");
         for(GalleryItem item:galleryItemList){
             Log.i(TAG, "onLoadFinished: item " + item.toString());
         }
@@ -102,16 +100,30 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
 
     private class ViewHolder extends RecyclerView.ViewHolder{
 
+        ImageView imageView;
         public ViewHolder(View itemView) {
             super(itemView);
+            this.imageView = (ImageView) itemView;
+        }
+
+        public void bindViewHolder(final int position){
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    GalleryItem item = galleryItems.get(position);
+                    DownloadFileFragment.newInstance(credentials, item).show(getFragmentManager(), "download");
+                }
+            });
         }
     }
 
     private class Adapter extends RecyclerView.Adapter<ViewHolder>{
 
+        ImageView imageView;
+
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            ImageView imageView = (ImageView) LayoutInflater.from(getContext())
+            imageView = (ImageView) LayoutInflater.from(getContext())
                     .inflate(R.layout.gallery_item_view, parent, false);
 
             return new ViewHolder(imageView);
@@ -119,15 +131,15 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-
+            holder.bindViewHolder(position);
         }
 
         @Override
         public int getItemCount() {
             return galleryItems.size();
         }
-
     }
+
 
 
 }

@@ -84,7 +84,7 @@ public class GalleryLoader extends AsyncTaskLoader<List<GalleryItem>> {
 
                 size = resourceList.getItems().size();
 
-            } while (!hasCancelled && size >= ITEMS_PER_REQUEST);
+            } while (!hasCancelled && offset < ITEMS_PER_REQUEST * 3);
 
             return galleryItemList;
 

@@ -1,12 +1,15 @@
 package ru.romananchugov.yandexschoolanchugov.service;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.yandex.disk.rest.json.Resource;
 
 /**
  * Created by romananchugov on 07.04.2018.
  */
 
-public class GalleryItem {
+public class GalleryItem implements Parcelable{
     private String name, path, etag, contentType, publicUrl, mediaType;
     private boolean dir;
     private long contentLength, lastUpdated;
@@ -72,5 +75,23 @@ public class GalleryItem {
 
     public long getLastUpdated() {
         return lastUpdated;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(path);
+        parcel.writeString(name);
+        parcel.writeLong(contentLength);
+        parcel.writeLong(lastUpdated);
+        parcel.writeByte((byte) (dir ? 1 : 0));
+        parcel.writeString(etag);
+        parcel.writeString(contentType);
+        parcel.writeString(publicUrl);
+        parcel.writeString(mediaType);
     }
 }
