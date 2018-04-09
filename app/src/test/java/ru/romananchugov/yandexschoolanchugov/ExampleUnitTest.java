@@ -1,4 +1,4 @@
-package ru.photogallery.romananchugov.photogallery;
+package ru.romananchugov.yandexschoolanchugov;
 
 import org.junit.Test;
 

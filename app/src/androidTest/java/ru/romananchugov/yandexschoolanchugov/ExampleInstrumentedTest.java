@@ -1,4 +1,4 @@
-package ru.photogallery.romananchugov.photogallery;
+package ru.romananchugov.yandexschoolanchugov;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("ru.photogallery.romananchugov.photogallery", appContext.getPackageName());
+        assertEquals("ru.romananchugov.yandexschoolanchugov", appContext.getPackageName());
     }
 }
