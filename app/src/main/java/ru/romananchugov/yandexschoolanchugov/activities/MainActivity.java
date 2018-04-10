@@ -1,4 +1,4 @@
-package ru.romananchugov.yandexschoolanchugov;
+package ru.romananchugov.yandexschoolanchugov.activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -16,21 +16,21 @@ import android.util.Log;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ru.romananchugov.yandexschoolanchugov.R;
+import ru.romananchugov.yandexschoolanchugov.fragmetns.GalleryListFragment;
+
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
     public static final String FRAGMENT_TAG = "gallery";
-
     public static final String CLIENT_ID = "959666c7ee9942f6b9ffec283205e35c";
-
-    public static final String AUTH_URL = "https://oauth.yandex.ru/authorize?response_type=token&client_id="+CLIENT_ID;
-
+    public static final String AUTH_URL = "https://oauth.yandex.ru/authorize?response_type=token&client_id=" + CLIENT_ID;
     public static final String USERNAME = "ymra.username";
     public static final String TOKEN = "ymra.token";
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i(TAG, "onCreate: onCreate()");
+
         super.onCreate(savedInstanceState);
 
         if (getIntent() != null && getIntent().getData() != null) {
@@ -56,13 +56,13 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    public void startLogin(){
+    public void startLogin() {
         Log.i(TAG, "startLogin: startLogin()");
 
         new AuthDialogFragment().show(getSupportFragmentManager(), "auth");
     }
 
-    public void onLogin(){
+    public void onLogin() {
         Log.i(TAG, "onLogin: onLogin()");
 
         Uri data = getIntent().getData();
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static class AuthDialogFragment extends DialogFragment {
 
-        public AuthDialogFragment () {
+        public AuthDialogFragment() {
             super();
         }
 
@@ -105,14 +105,14 @@ public class MainActivity extends AppCompatActivity {
                     .setMessage(R.string.example_auth_message)
                     .setPositiveButton(R.string.example_auth_positive_button, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick (DialogInterface dialog, int which) {
+                        public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(AUTH_URL)));
                         }
                     })
                     .setNegativeButton(R.string.example_auth_negative_button, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick (DialogInterface dialog, int which) {
+                        public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             getActivity().finish();
                         }

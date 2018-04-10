@@ -1,4 +1,4 @@
-package ru.romananchugov.yandexschoolanchugov;
+package ru.romananchugov.yandexschoolanchugov.network;
 
 import android.content.Context;
 import android.os.Handler;
@@ -17,8 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.romananchugov.yandexschoolanchugov.service.GalleryItem;
-import ru.romananchugov.yandexschoolanchugov.service.RestClientUtil;
+import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 
 /**
  * Created by romananchugov on 07.04.2018.
@@ -27,7 +26,9 @@ import ru.romananchugov.yandexschoolanchugov.service.RestClientUtil;
 public class GalleryLoader extends AsyncTaskLoader<List<GalleryItem>> {
     private static final String TAG = "GalleryLoader";
 
-    private static final int ITEMS_PER_REQUEST = 10;
+    private static final int ITEMS_PER_REQUEST = 30;
+
+    public static int PAGE = 10;
 
     private Handler handler;
     private Credentials credentials;
@@ -58,13 +59,11 @@ public class GalleryLoader extends AsyncTaskLoader<List<GalleryItem>> {
             int size = 0;
 
             do {
-                Log.i(TAG, "loadInBackground: gallerItemList.size = " + size );
-
                 ResourceList resourceList = client.getFlatResourceList(new ResourcesArgs.Builder()
                         .setLimit(ITEMS_PER_REQUEST)
                         .setMediaType("image")
-                        .setSort(ResourcesArgs.Sort.created)
                         .setOffset(offset)
+                        .setPreviewSize("M")
                         .setParsingHandler(new ResourcesHandler() {
                             @Override
                             public void handleItem(Resource item) {
@@ -84,7 +83,7 @@ public class GalleryLoader extends AsyncTaskLoader<List<GalleryItem>> {
 
                 size = resourceList.getItems().size();
 
-            } while (!hasCancelled && offset < ITEMS_PER_REQUEST * 3);
+            } while (!hasCancelled && offset < ITEMS_PER_REQUEST * PAGE);
 
             return galleryItemList;
 

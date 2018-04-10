@@ -1,4 +1,4 @@
-package ru.romananchugov.yandexschoolanchugov.service;
+package ru.romananchugov.yandexschoolanchugov.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,10 +9,22 @@ import com.yandex.disk.rest.json.Resource;
  * Created by romananchugov on 07.04.2018.
  */
 
-public class GalleryItem implements Parcelable{
+public class GalleryItem implements Parcelable {
+    public static final Creator<GalleryItem> CREATOR = new Creator<GalleryItem>() {
+        @Override
+        public GalleryItem createFromParcel(Parcel in) {
+            return new GalleryItem(in);
+        }
+
+        @Override
+        public GalleryItem[] newArray(int size) {
+            return new GalleryItem[size];
+        }
+    };
     private String name, path, etag, contentType, publicUrl, mediaType;
     private boolean dir;
     private long contentLength, lastUpdated;
+    private String downloadLink, preview, mime;
 
     public GalleryItem(Resource resource) {
         this.name = resource.getName();
@@ -22,8 +34,22 @@ public class GalleryItem implements Parcelable{
         this.publicUrl = resource.getPublicUrl();
         this.mediaType = resource.getMediaType();
         this.dir = resource.isDir();
+        this.preview = resource.getPreview();
         this.contentLength = resource.getSize();
+        this.mime = resource.getMimeType();
         this.lastUpdated = resource.getModified() != null ? resource.getModified().getTime() : 0;
+    }
+
+    protected GalleryItem(Parcel in) {
+        name = in.readString();
+        path = in.readString();
+        etag = in.readString();
+        contentType = in.readString();
+        publicUrl = in.readString();
+        mediaType = in.readString();
+        dir = in.readByte() != 0;
+        contentLength = in.readLong();
+        lastUpdated = in.readLong();
     }
 
     @Override
@@ -93,5 +119,21 @@ public class GalleryItem implements Parcelable{
         parcel.writeString(contentType);
         parcel.writeString(publicUrl);
         parcel.writeString(mediaType);
+    }
+
+    public String getDownloadLink() {
+        return downloadLink;
+    }
+
+    public void setDownloadLink(String downloadLink) {
+        this.downloadLink = downloadLink;
+    }
+
+    public String getPreview() {
+        return preview;
+    }
+
+    public String getMime() {
+        return mime;
     }
 }

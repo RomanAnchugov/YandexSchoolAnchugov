@@ -1,15 +1,18 @@
 package ru.romananchugov.yandexschoolanchugov.interfaces;
 
 import retrofit2.Call;
-import ru.romananchugov.yandexschoolanchugov.models.DowloadLink;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Query;
+import ru.romananchugov.yandexschoolanchugov.models.DownloadLink;
 
 /**
  * Created by romananchugov on 09.04.2018.
  */
 
-public interface GetDownloadLink {
+public interface DiskClientApi {
 
-
-    Call<DowloadLink> 
+    @GET("resources/download")
+    Call<DownloadLink> getDownloadFileLink(@Header("Authorization") String token, @Query("path") String pathToFile);
 
 }

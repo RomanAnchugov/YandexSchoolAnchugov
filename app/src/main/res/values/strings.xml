@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">YandexSchoolAnchugov</string>
+    <string name="app_name">Галерея</string>
     <string name="example_auth_title">Auth</string>
     <string name="example_auth_message">Open browser for auth?</string>
     <string name="example_auth_positive_button">Yes</string>

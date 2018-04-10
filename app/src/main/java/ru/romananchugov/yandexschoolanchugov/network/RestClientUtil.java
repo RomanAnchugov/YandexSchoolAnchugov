@@ -6,7 +6,7 @@
 * Version 2.0. See the file LICENSE for the details.
 */
 
-package ru.romananchugov.yandexschoolanchugov.service;
+package ru.romananchugov.yandexschoolanchugov.network;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.yandex.disk.rest.Credentials;
