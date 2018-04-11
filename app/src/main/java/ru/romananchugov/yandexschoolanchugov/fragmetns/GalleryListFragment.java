@@ -3,9 +3,6 @@ package ru.romananchugov.yandexschoolanchugov.fragmetns;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -14,32 +11,19 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
-import ru.romananchugov.yandexschoolanchugov.interfaces.DiskClientApi;
-import ru.romananchugov.yandexschoolanchugov.models.DownloadLink;
+import ru.romananchugov.yandexschoolanchugov.adapters.GalleryListAdapter;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 import ru.romananchugov.yandexschoolanchugov.network.Credentials;
 import ru.romananchugov.yandexschoolanchugov.network.GalleryLoader;
-import ru.romananchugov.yandexschoolanchugov.utils.GalleryClickListener;
 
 import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
 
@@ -47,6 +31,7 @@ import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKE
  * Created by romananchugov on 07.04.2018.
  */
 
+@SuppressLint("ValidFragment")
 public class GalleryListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<GalleryItem>> {
 
     private static final String TAG = "GalleryListFragment";
@@ -58,6 +43,12 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     private RecyclerView.Adapter adapter;
     private List<GalleryItem> galleryItems;
 
+
+    private GalleryListFragment(){}
+    public static GalleryListFragment newInstance(){
+        GalleryListFragment f = new GalleryListFragment();
+        return f;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,7 +70,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
 
         galleryItems = new ArrayList<>();
         recyclerView = v.findViewById(R.id.gallery_recycler_view);
-        adapter = new Adapter();
+        adapter = new GalleryListAdapter(this, galleryItems);
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(adapter);
@@ -125,47 +116,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         adapter.notifyDataSetChanged();
     }
 
-    public void firstLoad(final GalleryItem item, final int position, final Adapter.ViewHolder holder) {
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String token = preferences.getString(TOKEN, null);
-
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("https://cloud-api.yandex.net/v1/disk/")
-                .addConverterFactory(GsonConverterFactory.create());
-
-        final Retrofit retrofit = builder.build();
-
-        DiskClientApi clientApi = retrofit.create(DiskClientApi.class);
-        final Call<DownloadLink> call = clientApi.getDownloadFileLink("OAuth " + token, item.getPath());
-
-
-        call.enqueue(new Callback<DownloadLink>() {
-            @Override
-            public void onResponse(Call<DownloadLink> call, Response<DownloadLink> response) {
-                item.setDownloadLink(response.body().getHref());
-                glideLoading(position, holder);
-            }
-
-            @Override
-            public void onFailure(Call<DownloadLink> call, Throwable t) {
-
-            }
-        });
-    }
-
-    @SuppressLint("ResourceAsColor")
-    public void glideLoading(int position, Adapter.ViewHolder holder) {
-        Glide
-                .with(fragment)
-                .load(galleryItems.get(position).getDownloadLink())
-                .thumbnail(0.5f)
-                .apply(new RequestOptions()
-                        .error(new ColorDrawable(Color.WHITE))
-                        .placeholder(R.drawable.blue_drawable)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL))
-                .into(holder.imageView);
-    }
 
     @Override
     public void onResume() {
@@ -173,54 +124,6 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     }
 
 
-    private class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
-        private ImageView imageView;
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            imageView = (ImageView) LayoutInflater.from(getContext())
-                    .inflate(R.layout.gallery_item_view, parent, false);
-
-
-            return new ViewHolder(imageView);
-        }
-
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, final int position) {
-            Log.i(TAG, "onBindViewHolder: bind position " + position);
-            Drawable placeHolder = getResources().getDrawable(android.R.drawable.ic_menu_report_image);
-            holder.bindDrawable(placeHolder);
-
-            holder.imageView.setOnClickListener(new GalleryClickListener(position));
-
-
-            if (galleryItems.get(position).getDownloadLink() != null) {
-                glideLoading(position, holder);
-            } else {
-                firstLoad(galleryItems.get(position), position, holder);
-            }
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return galleryItems.size();
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-
-            ImageView imageView;
-
-            public ViewHolder(View itemView) {
-                super(itemView);
-                this.imageView = (ImageView) itemView;
-            }
-
-            public void bindDrawable(Drawable drawable) {
-                imageView.setImageDrawable(drawable);
-            }
-        }
-    }
 
 }

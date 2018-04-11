@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private void startFragment() {
         Log.i(TAG, "startFragment: startFragment()");
         getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new GalleryListFragment(), FRAGMENT_TAG)
+                .replace(android.R.id.content, GalleryListFragment.newInstance(), FRAGMENT_TAG)
                 .commit();
     }
 

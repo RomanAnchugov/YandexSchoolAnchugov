@@ -24,7 +24,7 @@ public class GalleryItem implements Parcelable {
     private String name, path, etag, contentType, publicUrl, mediaType;
     private boolean dir;
     private long contentLength, lastUpdated;
-    private String downloadLink, preview, mime;
+    private String downloadLink, preview, mime, date;
 
     public GalleryItem(Resource resource) {
         this.name = resource.getName();
@@ -38,6 +38,7 @@ public class GalleryItem implements Parcelable {
         this.contentLength = resource.getSize();
         this.mime = resource.getMimeType();
         this.lastUpdated = resource.getModified() != null ? resource.getModified().getTime() : 0;
+        this.date = resource.getCreated().toString();
     }
 
     protected GalleryItem(Parcel in) {
@@ -135,5 +136,9 @@ public class GalleryItem implements Parcelable {
 
     public String getMime() {
         return mime;
+    }
+
+    public String getDate() {
+        return date;
     }
 }
