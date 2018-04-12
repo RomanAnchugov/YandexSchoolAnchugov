@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String token = preferences.getString(TOKEN, null);
+        Log.i(TAG, "onCreate: " + token);
         if (token == null) {
             startLogin();
             return;
@@ -59,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
     public void startLogin() {
         Log.i(TAG, "startLogin: startLogin()");
 
-        new AuthDialogFragment().show(getSupportFragmentManager(), "auth");
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(AUTH_URL)));
+        //new AuthDialogFragment().show(getSupportFragmentManager(), "auth");
     }
 
     public void onLogin() {

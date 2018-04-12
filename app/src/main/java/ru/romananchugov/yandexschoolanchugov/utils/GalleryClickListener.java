@@ -3,11 +3,14 @@ package ru.romananchugov.yandexschoolanchugov.utils;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import java.io.Serializable;
 import java.util.List;
 
+import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.SliderDialogFragment;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 
@@ -35,11 +38,18 @@ public class GalleryClickListener implements View.OnClickListener {
         bundle.putInt(Keys.SLIDER_IMAGES_POSITION, position);
         bundle.putSerializable(Keys.SLIDER_IMAGES_ARRAY, (Serializable) galleryItems);
 
-        FragmentTransaction ft = fragment.getActivity().getSupportFragmentManager().beginTransaction();
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        SliderDialogFragment slider = SliderDialogFragment.newInstance();
-        slider.setArguments(bundle);
-        slider.show(ft, "slider");
+        ImageView imageView = (ImageView) view;
+
+        if(imageView.getDrawable().equals(R.drawable.ic_refresh_black_24dp)){
+            Log.i(TAG, "onClick: refresh click");
+
+        }else {
+            FragmentTransaction ft = fragment.getActivity().getSupportFragmentManager().beginTransaction();
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            SliderDialogFragment slider = SliderDialogFragment.newInstance();
+            slider.setArguments(bundle);
+            slider.show(ft, "slider");
+        }
 
     }
 }

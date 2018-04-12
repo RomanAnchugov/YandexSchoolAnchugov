@@ -2,21 +2,24 @@ package ru.romananchugov.yandexschoolanchugov.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -38,6 +41,10 @@ import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKE
 
 public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.ViewHolder>{
 
+    public static final String TAG = GalleryListAdapter.class.getSimpleName();
+
+    private HashMap<Integer, Call<DownloadLink>> callsMap;
+    private HashMap<Integer, Request> glidesMap;
     private ImageView imageView;
     private Fragment fragment;
     private List<GalleryItem> galleryItems;
@@ -45,6 +52,8 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
     public GalleryListAdapter(Fragment fragment, List<GalleryItem> galleryItems){
         this.fragment = fragment;
         this.galleryItems = galleryItems;
+        callsMap = new HashMap<>();
+        glidesMap = new HashMap<>();
     }
 
     @Override
@@ -58,19 +67,55 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Drawable placeHolder = fragment.getActivity().getResources().getDrawable(android.R.drawable.ic_menu_report_image);
+        Drawable placeHolder = fragment.getActivity().getResources().getDrawable(R.drawable.ic_preload_placeholder);
         holder.bindDrawable(placeHolder);
 
         holder.imageView.setOnClickListener(
                 new GalleryClickListener(position, galleryItems, fragment)
         );
 
-        if (galleryItems.get(position).getDownloadLink() != null) {
-            glideLoading(position, holder);
-        } else {
-            firstLoad(galleryItems.get(position), position, holder);
-        }
+//        if (galleryItems.get(position).getDownloadLink() != null) {
+//            glideLoading(position, holder);
+//        } else {
+//            galleryItems.get(position).setDownloadLink("");
+//            firstLoad(galleryItems.get(position), position, holder);
+//        }
 
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
+        if(holder.getAdapterPosition() >= 0) {
+            Log.i(TAG, "onViewDetachedFromWindow: for postion" + holder.getAdapterPosition());
+
+            int position = holder.getAdapterPosition();
+
+            if(callsMap.get(position) != null) {
+                callsMap.get(position).cancel();
+                callsMap.remove(position);
+                if(galleryItems.get(position).getDownloadLink().equals("")) {
+                    galleryItems.get(position).setDownloadLink(null);
+                }
+            }
+            if(glidesMap.get(position) != null && glidesMap.get(position).isRunning()) {
+                glidesMap.get(position).pause();
+            }
+        }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
+        Log.i(TAG, "onViewAttachedToWindow: view attach to window " + holder.getAdapterPosition());
+        if(holder.getAdapterPosition() >= 0){
+            int position = holder.getAdapterPosition();
+            if (galleryItems.get(position).getDownloadLink() != null) {
+                //if(glidesMap.containsKey(position) && glidesMap.get(position).isPaused()) glidesMap.get(position).recycle();
+                glideLoading(position, holder);
+            } else {
+                galleryItems.get(position).setDownloadLink("");
+                firstLoad(galleryItems.get(position), position, holder);
+            }
+        }
     }
 
     @Override
@@ -105,19 +150,24 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
 
             }
         });
+
+        callsMap.put(position, call);
     }
 
     @SuppressLint("ResourceAsColor")
     public void glideLoading(int position, GalleryListAdapter.ViewHolder holder) {
-        Glide
+        Request request = Glide
                 .with(fragment)
                 .load(galleryItems.get(position).getDownloadLink())
-                .thumbnail(0.5f)
                 .apply(new RequestOptions()
-                        .error(new ColorDrawable(Color.WHITE))
+                        .error(R.drawable.ic_refresh_black_24dp)
                         .placeholder(R.drawable.blue_drawable)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL))
-                .into(holder.imageView);
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .priority(Priority.NORMAL))
+                .into(holder.imageView).getRequest()
+                ;
+
+        glidesMap.put(position, request);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

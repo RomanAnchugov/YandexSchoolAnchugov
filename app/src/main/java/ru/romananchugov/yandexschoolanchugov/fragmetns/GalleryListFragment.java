@@ -4,11 +4,14 @@ package ru.romananchugov.yandexschoolanchugov.fragmetns;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,13 +35,14 @@ import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKE
  */
 
 @SuppressLint("ValidFragment")
-public class GalleryListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<GalleryItem>> {
+public class GalleryListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<GalleryItem>>
+        ,SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "GalleryListFragment";
 
     private Credentials credentials;
 
-    private Fragment fragment;
+    private SwipeRefreshLayout refresher;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private List<GalleryItem> galleryItems;
@@ -59,7 +63,6 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         String token = preferences.getString(TOKEN, null);
 
         credentials = new Credentials(username, token);
-        fragment = this;
         setRetainInstance(true);
     }
 
@@ -71,6 +74,15 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         galleryItems = new ArrayList<>();
         recyclerView = v.findViewById(R.id.gallery_recycler_view);
         adapter = new GalleryListAdapter(this, galleryItems);
+
+        refresher = v.findViewById(R.id.list_fragment_refresher);
+        refresher.setColorSchemeResources(
+                android.R.color.black,
+                R.color.blue,
+                R.color.yellow);
+
+        refresher.setOnRefreshListener(this);
+
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(adapter);
@@ -91,7 +103,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onLoaderReset(Loader<List<GalleryItem>> loader) {
+    public void onLoaderReset(@NonNull Loader<List<GalleryItem>> loader) {
 
     }
 
@@ -116,14 +128,14 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         adapter.notifyDataSetChanged();
     }
 
-
-
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onRefresh() {
+        getLoaderManager().initLoader(0, null, this);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                refresher.setRefreshing(false);
+            }
+        }, 1500);
     }
-
-
-
-
 }

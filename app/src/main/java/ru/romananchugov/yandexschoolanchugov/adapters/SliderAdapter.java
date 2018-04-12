@@ -13,10 +13,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -42,7 +44,7 @@ public class SliderAdapter extends PagerAdapter {
     private Activity activity;
 
     public SliderAdapter(Activity activity, List<GalleryItem> galleryItems){
-        this.galleryItems = galleryItems;
+        this.galleryItems = new ArrayList<>(galleryItems);
         this.activity = activity;
     }
 
@@ -92,7 +94,8 @@ public class SliderAdapter extends PagerAdapter {
                 .apply(new RequestOptions()
                         .error(R.drawable.ic_error_placeholder)
                         .placeholder(R.drawable.ic_slider_placeholder)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .priority(Priority.IMMEDIATE))
                 .into(imageView);
     }
 
