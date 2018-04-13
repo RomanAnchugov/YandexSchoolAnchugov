@@ -1,14 +1,10 @@
 package ru.romananchugov.yandexschoolanchugov.activities;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,7 +12,6 @@ import android.util.Log;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.GalleryListFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -92,34 +87,5 @@ public class MainActivity extends AppCompatActivity {
         editor.putString(USERNAME, "");
         editor.putString(TOKEN, token);
         editor.apply();
-    }
-
-    public static class AuthDialogFragment extends DialogFragment {
-
-        public AuthDialogFragment() {
-            super();
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return new AlertDialog.Builder(getActivity())
-                    .setTitle(R.string.example_auth_title)
-                    .setMessage(R.string.example_auth_message)
-                    .setPositiveButton(R.string.example_auth_positive_button, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(AUTH_URL)));
-                        }
-                    })
-                    .setNegativeButton(R.string.example_auth_negative_button, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            getActivity().finish();
-                        }
-                    })
-                    .create();
-        }
     }
 }

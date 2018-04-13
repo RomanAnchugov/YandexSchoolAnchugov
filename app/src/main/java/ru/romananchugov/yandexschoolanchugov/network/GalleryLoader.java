@@ -28,6 +28,7 @@ public class GalleryLoader extends AsyncTaskLoader<List<GalleryItem>> {
 
     private static final int ITEMS_PER_REQUEST = 30;
 
+    //TODO: change this
     public static int PAGE = 10;
 
     private Handler handler;

@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="ru.romananchugov.yandexschoolanchugov.activities.MainActivity">
+    tools:context="ru.romananchugov.yandexschoolanchugov.activities.MainActivity"
+    android:id="@+id/fragment_container">
 
     <include layout="@layout/toolbar"
         android:id="@+id/toolbar"/>

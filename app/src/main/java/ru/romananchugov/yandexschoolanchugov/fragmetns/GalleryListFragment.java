@@ -8,7 +8,9 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -43,6 +45,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     private Credentials credentials;
 
     private SwipeRefreshLayout refresher;
+    private FloatingActionButton fab;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private List<GalleryItem> galleryItems;
@@ -78,14 +81,31 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         refresher = v.findViewById(R.id.list_fragment_refresher);
         refresher.setColorSchemeResources(
                 android.R.color.black,
-                R.color.blue,
-                R.color.yellow);
+                R.color.blue);
 
         refresher.setOnRefreshListener(this);
+
+        fab = v.findViewById(R.id.add_new_image_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToNewPhotoFragment();
+            }
+        });
 
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener( new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 && fab.getVisibility() == View.VISIBLE) {
+                    fab.hide();
+                } else if (dy < 0 && fab.getVisibility() != View.VISIBLE) {
+                    fab.show();
+                }
+            }
+        });
 
         getLoaderManager().initLoader(0, null, this);
         return v;
@@ -107,10 +127,27 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
 
     }
 
+    @Override
+    public void onRefresh() {
+        getLoaderManager().restartLoader(0, null, this);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                refresher.setRefreshing(false);
+            }
+        }, 1500);
+    }
+
+    public void goToNewPhotoFragment(){
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        AddNewPhotoFragment addNewPhotoFragment = AddNewPhotoFragment.newInstance(credentials);
+        ft.replace(android.R.id.content, addNewPhotoFragment).addToBackStack(null);
+        ft.commit();
+    }
+
     public void setData(List<GalleryItem> galleryItemList) {
-
         galleryItems.clear();
-
 
         for (int i = 0; i < galleryItemList.size(); i++) {
             GalleryItem item = galleryItemList.get(i);
@@ -126,16 +163,5 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
 
 
         adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onRefresh() {
-        getLoaderManager().initLoader(0, null, this);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                refresher.setRefreshing(false);
-            }
-        }, 1500);
     }
 }

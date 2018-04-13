@@ -43,6 +43,8 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
 
     public static final String TAG = GalleryListAdapter.class.getSimpleName();
 
+
+
     private HashMap<Integer, Call<DownloadLink>> callsMap;
     private HashMap<Integer, Request> glidesMap;
     private ImageView imageView;
@@ -163,9 +165,10 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
                         .error(R.drawable.ic_refresh_black_24dp)
                         .placeholder(R.drawable.blue_drawable)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .priority(Priority.NORMAL))
-                .into(holder.imageView).getRequest()
-                ;
+                        .priority(Priority.NORMAL)
+                        .timeout(60000)
+                        )
+                .into(holder.imageView).getRequest();
 
         glidesMap.put(position, request);
     }
