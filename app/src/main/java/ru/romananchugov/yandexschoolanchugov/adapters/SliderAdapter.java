@@ -10,7 +10,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -42,11 +47,24 @@ public class SliderAdapter extends PagerAdapter {
     public static final String TAG = SliderAdapter.class.getSimpleName();
 
     private List<GalleryItem> galleryItems;
+    private List<TextView> infoViews;
     private Activity activity;
+    private boolean infoVisible;
 
-    public SliderAdapter(Activity activity, List<GalleryItem> galleryItems){
+
+    public SliderAdapter(Activity activity, List<GalleryItem> galleryItems, List<TextView> infoViews){
         this.galleryItems = new ArrayList<>(galleryItems);
         this.activity = activity;
+        this.infoViews = infoViews;
+        infoVisible = true;
+        Animation fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
+        fadeIn.setDuration(1000);
+
+        Animation fadeOut = new AlphaAnimation(1, 0);
+        fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
+        fadeOut.setStartOffset(1000);
+        fadeOut.setDuration(1000);
     }
 
     @NonNull
@@ -55,6 +73,13 @@ public class SliderAdapter extends PagerAdapter {
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.slider_item, container, false);
         ImageView imageView = v.findViewById(R.id.slider_item_image_view);
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "onClick: clicked");
+                toggleInfoVisibility();
+            }
+        });
 
         GalleryItem item = galleryItems.get(position);
         if(item.getDownloadLink() != null) {
@@ -127,5 +152,19 @@ public class SliderAdapter extends PagerAdapter {
 
             }
         });
+    }
+
+    public void toggleInfoVisibility(){
+        if(infoVisible){
+            for(TextView textView: infoViews){
+                textView.setVisibility(View.GONE);
+            }
+            infoVisible = false;
+        }else{
+            for(TextView textView: infoViews){
+                textView.setVisibility(View.VISIBLE);
+            }
+            infoVisible = true;
+        }
     }
 }

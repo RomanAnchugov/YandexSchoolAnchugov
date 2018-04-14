@@ -12,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.yandex.disk.rest.Credentials;
-
 import ru.romananchugov.yandexschoolanchugov.R;
 
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
@@ -26,20 +24,18 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
 public class AddNewPhotoFragment extends Fragment {
     private static final String TAG = AddNewPhotoFragment.class.getSimpleName();
 
-    private Credentials credentials;
     private Activity activity;
 
     private LinearLayout linearLayout;
 
 
-    private AddNewPhotoFragment(Credentials credentials, Activity activity){
-        this.credentials = credentials;
+    private AddNewPhotoFragment(Activity activity){
         this.activity = activity;
     }
 
     @NonNull
-    public static AddNewPhotoFragment newInstance(Credentials credentials, Activity activity){
-        return new AddNewPhotoFragment(credentials, activity);
+    public static AddNewPhotoFragment newInstance(Activity activity){
+        return new AddNewPhotoFragment(activity);
     }
 
     @Nullable

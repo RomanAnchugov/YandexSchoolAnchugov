@@ -1,4 +1,4 @@
-package ru.romananchugov.yandexschoolanchugov.adapters;
+package ru.romananchugov.yandexschoolanchugov.fragmetns;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

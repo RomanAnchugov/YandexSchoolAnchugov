@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.romananchugov.yandexschoolanchugov.R;
@@ -59,12 +60,17 @@ public class SliderDialogFragment extends DialogFragment {
 
         galleryItems = (List<GalleryItem>) getArguments().getSerializable(Keys.SLIDER_IMAGES_ARRAY);
         position = getArguments().getInt(Keys.SLIDER_IMAGES_POSITION);
-
         imagesCountTextView = v.findViewById(R.id.images_count_text_view);
         imageTitleTextView = v.findViewById(R.id.image_title_text_view);
         imageDateTextView = v.findViewById(R.id.image_date_text_view);
+
+        List<TextView> infoViews = new ArrayList<>();
+        infoViews.add(imageDateTextView);
+        infoViews.add(imageTitleTextView);
+        infoViews.add(imagesCountTextView);
+
         viewPager = v.findViewById(R.id.slider_view_pager);
-        viewPager.setAdapter(new SliderAdapter(getActivity(), galleryItems));
+        viewPager.setAdapter(new SliderAdapter(getActivity(), galleryItems, infoViews));
         viewPager.addOnPageChangeListener(viewPagerChangeListener);
 
         setCurrentImage(position);
@@ -81,7 +87,7 @@ public class SliderDialogFragment extends DialogFragment {
 
     public void displayImageInfo(int position){
         //TODO: placeholder
-        imagesCountTextView.setText((position + 1) + " of " +  galleryItems.size());
+        imagesCountTextView.setText((position + 1) + " из " +  galleryItems.size());
 
         GalleryItem item = galleryItems.get(position);
         imageTitleTextView.setText(item.getName());

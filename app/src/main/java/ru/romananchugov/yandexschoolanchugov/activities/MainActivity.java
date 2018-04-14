@@ -30,7 +30,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
-import ru.romananchugov.yandexschoolanchugov.adapters.UploadingProgressDialog;
+import ru.romananchugov.yandexschoolanchugov.fragmetns.UploadingProgressDialog;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.GalleryListFragment;
 import ru.romananchugov.yandexschoolanchugov.interfaces.DiskClientApi;
 import ru.romananchugov.yandexschoolanchugov.models.UploaderWrapper;

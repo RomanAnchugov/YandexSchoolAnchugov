@@ -141,7 +141,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     public void goToNewPhotoFragment(){
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        AddNewPhotoFragment addNewPhotoFragment = AddNewPhotoFragment.newInstance(credentials, getActivity());
+        AddNewPhotoFragment addNewPhotoFragment = AddNewPhotoFragment.newInstance(getActivity());
 
         ft.replace(R.id.fragment_container, addNewPhotoFragment).addToBackStack(null);
         ft.commit();
