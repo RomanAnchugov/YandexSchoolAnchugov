@@ -40,7 +40,7 @@ import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKE
 public class GalleryListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<GalleryItem>>
         ,SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String TAG = "GalleryListFragment";
+    private static final String TAG = GalleryListAdapter.class.getSimpleName();
 
     private Credentials credentials;
 
@@ -141,8 +141,9 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     public void goToNewPhotoFragment(){
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        AddNewPhotoFragment addNewPhotoFragment = AddNewPhotoFragment.newInstance(credentials);
-        ft.replace(android.R.id.content, addNewPhotoFragment).addToBackStack(null);
+        AddNewPhotoFragment addNewPhotoFragment = AddNewPhotoFragment.newInstance(credentials, getActivity());
+
+        ft.replace(R.id.fragment_container, addNewPhotoFragment).addToBackStack(null);
         ft.commit();
     }
 

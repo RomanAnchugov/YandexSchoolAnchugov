@@ -32,6 +32,7 @@ import ru.romananchugov.yandexschoolanchugov.models.DownloadLink;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 
 import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
 
 /**
  * Created by romananchugov on 11.04.2018.
@@ -105,7 +106,7 @@ public class SliderAdapter extends PagerAdapter {
         String token = preferences.getString(TOKEN, null);
 
         Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("https://cloud-api.yandex.net/v1/disk/")
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create());
 
         final Retrofit retrofit = builder.build();

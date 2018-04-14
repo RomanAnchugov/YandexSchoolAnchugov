@@ -4,4 +4,5 @@
     <string name="example_auth_message">Open browser for auth?</string>
     <string name="example_auth_positive_button">Yes</string>
     <string name="example_auth_negative_button">Exit</string>
+    <string name="upload_description">Выбирете фотографию из своей Галереи</string>
 </resources>

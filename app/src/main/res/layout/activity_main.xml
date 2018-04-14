@@ -8,7 +8,7 @@
     tools:context="ru.romananchugov.yandexschoolanchugov.activities.MainActivity"
     android:id="@+id/fragment_container">
 
-    <include layout="@layout/toolbar"
-        android:id="@+id/toolbar"/>
+    <!--<include layout="@layout/toolbar"-->
+        <!--android:id="@+id/toolbar"/>-->
 
 </LinearLayout>
