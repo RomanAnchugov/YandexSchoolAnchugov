@@ -50,21 +50,22 @@ public class SliderAdapter extends PagerAdapter {
     private List<TextView> infoViews;
     private Activity activity;
     private boolean infoVisible;
-
+    private Animation fadeIn;
+    private Animation fadeOut;
 
     public SliderAdapter(Activity activity, List<GalleryItem> galleryItems, List<TextView> infoViews){
         this.galleryItems = new ArrayList<>(galleryItems);
         this.activity = activity;
         this.infoViews = infoViews;
         infoVisible = true;
-        Animation fadeIn = new AlphaAnimation(0, 1);
-        fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
-        fadeIn.setDuration(1000);
 
-        Animation fadeOut = new AlphaAnimation(1, 0);
-        fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
-        fadeOut.setStartOffset(1000);
-        fadeOut.setDuration(1000);
+        fadeIn = new AlphaAnimation(0, 1);
+        fadeIn.setInterpolator(new DecelerateInterpolator());
+        fadeIn.setDuration(100);
+
+        fadeOut = new AlphaAnimation(1, 0);
+        fadeOut.setInterpolator(new AccelerateInterpolator());
+        fadeOut.setDuration(100);
     }
 
     @NonNull
@@ -157,11 +158,13 @@ public class SliderAdapter extends PagerAdapter {
     public void toggleInfoVisibility(){
         if(infoVisible){
             for(TextView textView: infoViews){
+                textView.startAnimation(fadeOut);
                 textView.setVisibility(View.GONE);
             }
             infoVisible = false;
         }else{
             for(TextView textView: infoViews){
+                textView.startAnimation(fadeIn);
                 textView.setVisibility(View.VISIBLE);
             }
             infoVisible = true;
