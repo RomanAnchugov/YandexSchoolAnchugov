@@ -163,7 +163,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
                 .load(galleryItems.get(position).getDownloadLink())
                 .apply(new RequestOptions()
                         .error(R.drawable.ic_refresh_black_24dp)
-                        .placeholder(R.drawable.blue_drawable)
+                        .placeholder(R.drawable.image_placeholder)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .priority(Priority.NORMAL)
                         .timeout(60000)

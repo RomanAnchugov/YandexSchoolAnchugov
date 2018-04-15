@@ -12,7 +12,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@drawable/item_bg_card"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     <android.support.v4.widget.DrawerLayout
