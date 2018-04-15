@@ -9,9 +9,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.yandex.disk.rest.Credentials;
@@ -30,8 +37,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
-import ru.romananchugov.yandexschoolanchugov.fragmetns.UploadingProgressDialog;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.GalleryListFragment;
+import ru.romananchugov.yandexschoolanchugov.fragmetns.UploadingProgressDialog;
 import ru.romananchugov.yandexschoolanchugov.interfaces.DiskClientApi;
 import ru.romananchugov.yandexschoolanchugov.models.UploaderWrapper;
 import ru.romananchugov.yandexschoolanchugov.network.RestClientUtil;
@@ -39,7 +46,8 @@ import ru.romananchugov.yandexschoolanchugov.network.RestClientUtil;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     public static final String FRAGMENT_TAG = "gallery";
     public static final String CLIENT_ID = "959666c7ee9942f6b9ffec283205e35c";
@@ -52,8 +60,44 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.open_nav_drawer, R.string.close_nav_drawer);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
 
         progressFragmentDialog = new UploadingProgressDialog();
 
@@ -192,6 +236,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return ((path == null || path.isEmpty()) ? (uri.getPath()) : path);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return true;
     }
 
     private class AsyncUpload extends AsyncTask<UploaderWrapper, Integer, Void>{

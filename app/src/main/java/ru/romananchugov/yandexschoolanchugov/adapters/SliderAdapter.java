@@ -61,11 +61,11 @@ public class SliderAdapter extends PagerAdapter {
 
         fadeIn = new AlphaAnimation(0, 1);
         fadeIn.setInterpolator(new DecelerateInterpolator());
-        fadeIn.setDuration(100);
+        fadeIn.setDuration(150);
 
         fadeOut = new AlphaAnimation(1, 0);
         fadeOut.setInterpolator(new AccelerateInterpolator());
-        fadeOut.setDuration(100);
+        fadeOut.setDuration(150);
     }
 
     @NonNull

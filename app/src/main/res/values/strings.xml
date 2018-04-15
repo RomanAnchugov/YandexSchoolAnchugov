@@ -5,4 +5,6 @@
     <string name="example_auth_positive_button">Yes</string>
     <string name="example_auth_negative_button">Exit</string>
     <string name="upload_description">Выбирете фотографию из своей Галереи</string>
+    <string name="open_nav_drawer">Open navigation drawer</string>
+    <string name="close_nav_drawer">Close navigation drawer</string>
 </resources>
