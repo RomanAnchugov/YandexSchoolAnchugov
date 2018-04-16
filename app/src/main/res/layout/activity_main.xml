@@ -36,6 +36,8 @@
             android:layout_gravity="start"
             android:background="@android:color/white"
             android:fitsSystemWindows="true"
+            app:itemIconTint="@color/drawer_item"
+            app:itemTextColor="@color/drawer_item"
             app:itemBackground="@drawable/item_menu_background"
             app:menu="@menu/activity_navigation_drawer" />
 

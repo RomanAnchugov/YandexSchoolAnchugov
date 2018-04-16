@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item
+        android:id="@+id/gallery_menu_item"
+        android:title="@string/app_title"
+        android:icon="@drawable/ic_gallery"/>
+    <item
+        android:id="@+id/about_menu_item"
+        android:title="@string/about_app"
+        android:icon="@drawable/ic_about_app"/>
+    <item
+        android:id="@+id/logout_menu_item"
+        android:title="@string/logout"
+        android:icon="@drawable/ic_about_app"/>
+
 </menu>

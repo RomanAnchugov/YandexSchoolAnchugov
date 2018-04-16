@@ -42,6 +42,8 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
 
     private static final String TAG = GalleryListAdapter.class.getSimpleName();
 
+    private String title;
+
     private Credentials credentials;
 
     private SwipeRefreshLayout refresher;
@@ -51,9 +53,11 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     private List<GalleryItem> galleryItems;
 
 
-    private GalleryListFragment(){}
-    public static GalleryListFragment newInstance(){
-        GalleryListFragment f = new GalleryListFragment();
+    private GalleryListFragment(String title){
+        this.title = title;
+    }
+    public static GalleryListFragment newInstance(String title){
+        GalleryListFragment f = new GalleryListFragment(title);
         return f;
     }
 
@@ -111,6 +115,10 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         return v;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        getActivity().setTitle(title);
+    }
 
     @Override
     public Loader<List<GalleryItem>> onCreateLoader(int i, Bundle bundle) {

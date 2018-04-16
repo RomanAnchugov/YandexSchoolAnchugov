@@ -7,4 +7,7 @@
     <string name="upload_description">Выбирете фотографию из своей Галереи</string>
     <string name="open_nav_drawer">Open navigation drawer</string>
     <string name="close_nav_drawer">Close navigation drawer</string>
+    <string name="about_app">О приложении</string>
+    <string name="app_title">Я.Галерея</string>
+    <string name="logout">Выйти из аккаунта</string>
 </resources>

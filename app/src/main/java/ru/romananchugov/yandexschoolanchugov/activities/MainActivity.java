@@ -1,5 +1,6 @@
 package ru.romananchugov.yandexschoolanchugov.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +12,9 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +23,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.yandex.disk.rest.Credentials;
@@ -49,7 +55,7 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
-    public static final String FRAGMENT_TAG = "gallery";
+    private static final String GALLERY_FRAGMENT_TAG = "Gallery";
     public static final String CLIENT_ID = "959666c7ee9942f6b9ffec283205e35c";
     public static final String AUTH_URL = "https://oauth.yandex.ru/authorize?response_type=token&client_id=" + CLIENT_ID;
     public static final String USERNAME = "ymra.username";
@@ -71,7 +77,7 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-
+                closeKeyboard();
             }
 
             @Override
@@ -98,7 +104,6 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         progressFragmentDialog = new UploadingProgressDialog();
 
         if (getIntent() != null && getIntent().getData() != null) {
@@ -107,7 +112,6 @@ public class MainActivity extends AppCompatActivity
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String token = preferences.getString(TOKEN, null);
-        Log.i(TAG, "onCreate: " + token);
         if (token == null) {
             startLogin();
             return;
@@ -141,18 +145,38 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        boolean isGalleryVisible = getSupportFragmentManager().findFragmentByTag(GALLERY_FRAGMENT_TAG).isVisible();
+
+        switch (item.getItemId()){
+            case R.id.gallery_menu_item:
+                if(!isGalleryVisible) {
+                    addFragment(GalleryListFragment.newInstance("Я.Галерея"), GALLERY_FRAGMENT_TAG);
+                    item.setChecked(true);
+                }
+                break;
+            case R.id.about_menu_item:
+                item.setChecked(true);
+                break;
+            case R.id.logout_menu_item:
+                item.setChecked(true);
+                break;
+        }
+
+        closeNavDrawer();
+        closeKeyboard();
+        return true;
+    }
+
     private void startFragment() {
-        Log.i(TAG, "startFragment: startFragment()");
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, GalleryListFragment.newInstance(), FRAGMENT_TAG)
+                .add(R.id.fragment_container, GalleryListFragment.newInstance("Я.Галерея"), GALLERY_FRAGMENT_TAG)
                 .commit();
     }
 
     public void startLogin() {
-        Log.i(TAG, "startLogin: startLogin()");
-
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(AUTH_URL)));
-        //new AuthDialogFragment().show(getSupportFragmentManager(), "auth");
     }
 
     public void onLogin() {
@@ -238,11 +262,24 @@ public class MainActivity extends AppCompatActivity
         return ((path == null || path.isEmpty()) ? (uri.getPath()) : path);
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return true;
+    public void addFragment(Fragment fragment, String tag){
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft = ft.replace(R.id.fragment_container, fragment, tag);
+        ft.commit();
     }
 
+    public void closeNavDrawer(){
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+    }
+
+    public void closeKeyboard(){
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.fragment_container);
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(frameLayout.getWindowToken(), 0);
+    }
+
+    @SuppressLint("StaticFieldLeak")
     private class AsyncUpload extends AsyncTask<UploaderWrapper, Integer, Void>{
 
         @Override
