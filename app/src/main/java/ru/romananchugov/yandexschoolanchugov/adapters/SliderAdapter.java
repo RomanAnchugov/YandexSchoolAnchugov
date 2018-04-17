@@ -15,13 +15,14 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
+import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,27 +46,29 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
 
 public class SliderAdapter extends PagerAdapter {
     public static final String TAG = SliderAdapter.class.getSimpleName();
+    private static final int ANIMATION_DURATION = 300;
 
     private List<GalleryItem> galleryItems;
-    private List<TextView> infoViews;
+    private RelativeLayout infoContainer;
     private Activity activity;
     private boolean infoVisible;
     private Animation fadeIn;
     private Animation fadeOut;
 
-    public SliderAdapter(Activity activity, List<GalleryItem> galleryItems, List<TextView> infoViews){
+
+    public SliderAdapter(Activity activity, List<GalleryItem> galleryItems, RelativeLayout infoContainer){
         this.galleryItems = new ArrayList<>(galleryItems);
+        this.infoContainer = infoContainer;
         this.activity = activity;
-        this.infoViews = infoViews;
         infoVisible = true;
 
         fadeIn = new AlphaAnimation(0, 1);
         fadeIn.setInterpolator(new DecelerateInterpolator());
-        fadeIn.setDuration(150);
+        fadeIn.setDuration(ANIMATION_DURATION);
 
         fadeOut = new AlphaAnimation(1, 0);
         fadeOut.setInterpolator(new AccelerateInterpolator());
-        fadeOut.setDuration(150);
+        fadeOut.setDuration(ANIMATION_DURATION);
     }
 
     @NonNull
@@ -73,14 +76,14 @@ public class SliderAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.slider_item, container, false);
-        ImageView imageView = v.findViewById(R.id.slider_item_image_view);
-        v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "onClick: clicked");
-                toggleInfoVisibility();
-            }
-        });
+        PhotoView imageView = v.findViewById(R.id.slider_item_image_view);
+//        infoContainer.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.i(TAG, "onClick: clicked");
+//                //oggleInfoVisibility();
+//            }
+//        });
 
         GalleryItem item = galleryItems.get(position);
         if(item.getDownloadLink() != null) {
@@ -122,7 +125,8 @@ public class SliderAdapter extends PagerAdapter {
                         .error(R.drawable.ic_error_placeholder)
                         .placeholder(R.drawable.ic_slider_placeholder)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .priority(Priority.IMMEDIATE))
+                        .priority(Priority.IMMEDIATE)
+                        .timeout(60000))
                 .into(imageView);
     }
 
@@ -157,16 +161,12 @@ public class SliderAdapter extends PagerAdapter {
 
     public void toggleInfoVisibility(){
         if(infoVisible){
-            for(TextView textView: infoViews){
-                textView.startAnimation(fadeOut);
-                textView.setVisibility(View.GONE);
-            }
+            infoContainer.startAnimation(fadeOut);
+            infoContainer.setVisibility(View.GONE);
             infoVisible = false;
         }else{
-            for(TextView textView: infoViews){
-                textView.startAnimation(fadeIn);
-                textView.setVisibility(View.VISIBLE);
-            }
+            infoContainer.startAnimation(fadeIn);
+            infoContainer.setVisibility(View.VISIBLE);
             infoVisible = true;
         }
     }

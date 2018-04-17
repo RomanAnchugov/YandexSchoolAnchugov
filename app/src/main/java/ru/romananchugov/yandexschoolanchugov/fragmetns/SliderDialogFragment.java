@@ -9,9 +9,9 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.romananchugov.yandexschoolanchugov.R;
@@ -31,6 +31,7 @@ public class SliderDialogFragment extends DialogFragment {
     private List<GalleryItem> galleryItems;
     private int position;
 
+    private RelativeLayout infoContainer;
     private TextView imagesCountTextView;
     private TextView imageTitleTextView;
     private TextView imageDateTextView;
@@ -56,21 +57,17 @@ public class SliderDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.gallery_slider_fragment, container, false);
+        View v = inflater.inflate(R.layout.slider_fragment, container, false);
 
         galleryItems = (List<GalleryItem>) getArguments().getSerializable(Keys.SLIDER_IMAGES_ARRAY);
         position = getArguments().getInt(Keys.SLIDER_IMAGES_POSITION);
         imagesCountTextView = v.findViewById(R.id.images_count_text_view);
         imageTitleTextView = v.findViewById(R.id.image_title_text_view);
         imageDateTextView = v.findViewById(R.id.image_date_text_view);
-
-        List<TextView> infoViews = new ArrayList<>();
-        infoViews.add(imageDateTextView);
-        infoViews.add(imageTitleTextView);
-        infoViews.add(imagesCountTextView);
+        infoContainer = v.findViewById(R.id.slider_info_container);
 
         viewPager = v.findViewById(R.id.slider_view_pager);
-        viewPager.setAdapter(new SliderAdapter(getActivity(), galleryItems, infoViews));
+        viewPager.setAdapter(new SliderAdapter(getActivity(), galleryItems, infoContainer));
         viewPager.addOnPageChangeListener(viewPagerChangeListener);
 
         setCurrentImage(position);
