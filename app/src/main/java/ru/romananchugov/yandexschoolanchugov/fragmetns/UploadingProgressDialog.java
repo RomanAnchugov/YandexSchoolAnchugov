@@ -1,5 +1,6 @@
 package ru.romananchugov.yandexschoolanchugov.fragmetns;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -14,6 +15,12 @@ import ru.romananchugov.yandexschoolanchugov.R;
  */
 
 public class UploadingProgressDialog extends DialogFragment {
+    @SuppressLint("ValidFragment")
+    private UploadingProgressDialog(){}
+
+    public static UploadingProgressDialog newInstance(){
+        return new UploadingProgressDialog();
+    }
 
     @NonNull
     @Override

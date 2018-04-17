@@ -44,6 +44,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.GalleryListFragment;
+import ru.romananchugov.yandexschoolanchugov.fragmetns.LogoutAcceptDialog;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.UploadingProgressDialog;
 import ru.romananchugov.yandexschoolanchugov.interfaces.DiskClientApi;
 import ru.romananchugov.yandexschoolanchugov.models.UploaderWrapper;
@@ -104,11 +105,13 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        progressFragmentDialog = new UploadingProgressDialog();
+        progressFragmentDialog = UploadingProgressDialog.newInstance();
 
         if (getIntent() != null && getIntent().getData() != null) {
             onLogin();
         }
+
+        navigationView.getMenu().getItem(0).setChecked(true);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String token = preferences.getString(TOKEN, null);
@@ -160,7 +163,7 @@ public class MainActivity extends AppCompatActivity
                 item.setChecked(true);
                 break;
             case R.id.logout_menu_item:
-                item.setChecked(true);
+                logout();
                 break;
         }
 
@@ -179,9 +182,16 @@ public class MainActivity extends AppCompatActivity
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(AUTH_URL)));
     }
 
-    public void onLogin() {
-        Log.i(TAG, "onLogin: onLogin()");
+    public void logout(){
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putString(USERNAME, "");
+        editor.putString(TOKEN, null);
+        editor.apply();
+        LogoutAcceptDialog.newInstance().show(getSupportFragmentManager(), "dialog");
+        //finish();
+    }
 
+    public void onLogin() {
         Uri data = getIntent().getData();
         setIntent(null);
 
@@ -202,7 +212,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void saveToken(String token) {
-        Log.i(TAG, "saveToken: saveToken()");
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
         editor.putString(USERNAME, "");
         editor.putString(TOKEN, token);
