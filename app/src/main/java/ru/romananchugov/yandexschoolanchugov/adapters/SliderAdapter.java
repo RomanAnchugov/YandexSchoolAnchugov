@@ -77,13 +77,12 @@ public class SliderAdapter extends PagerAdapter {
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.slider_item, container, false);
         PhotoView imageView = v.findViewById(R.id.slider_item_image_view);
-//        infoContainer.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.i(TAG, "onClick: clicked");
-//                //oggleInfoVisibility();
-//            }
-//        });
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleInfoVisibility();
+            }
+        });
 
         GalleryItem item = galleryItems.get(position);
         if(item.getDownloadLink() != null) {

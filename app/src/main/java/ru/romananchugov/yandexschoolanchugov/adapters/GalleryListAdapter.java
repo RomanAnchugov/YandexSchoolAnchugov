@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,11 +40,9 @@ import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKE
  * Created by romananchugov on 11.04.2018.
  */
 
-public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.ViewHolder>{
+public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.ViewHolder> implements View.OnLongClickListener{
 
     public static final String TAG = GalleryListAdapter.class.getSimpleName();
-
-
 
     private HashMap<Integer, Call<DownloadLink>> callsMap;
     private HashMap<Integer, Request> glidesMap;
@@ -63,7 +62,6 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         imageView = (ImageView) LayoutInflater.from(fragment.getContext())
                 .inflate(R.layout.gallery_item_view, parent, false);
 
-
         return new ViewHolder(imageView);
     }
 
@@ -75,14 +73,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         holder.imageView.setOnClickListener(
                 new GalleryClickListener(position, galleryItems, fragment)
         );
-
-//        if (galleryItems.get(position).getDownloadLink() != null) {
-//            glideLoading(position, holder);
-//        } else {
-//            galleryItems.get(position).setDownloadLink("");
-//            firstLoad(galleryItems.get(position), position, holder);
-//        }
-
+        holder.imageView.setOnLongClickListener(this);
     }
 
     @Override
@@ -171,6 +162,13 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
                 .into(holder.imageView).getRequest();
 
         glidesMap.put(position, request);
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        Toolbar toolbar = fragment.getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle("deleting");
+        return true;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

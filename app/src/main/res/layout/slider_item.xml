@@ -4,14 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<ImageView-->
-        <!--android:id="@+id/slider_item_image_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@android:color/black"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:scaleType="fitCenter"/>-->
-
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/slider_item_image_view"
         android:layout_width="match_parent"
