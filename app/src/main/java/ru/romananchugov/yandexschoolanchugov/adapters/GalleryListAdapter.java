@@ -31,6 +31,7 @@ import ru.romananchugov.yandexschoolanchugov.interfaces.DiskClientApi;
 import ru.romananchugov.yandexschoolanchugov.models.DownloadLink;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 import ru.romananchugov.yandexschoolanchugov.utils.GalleryClickListener;
+import ru.romananchugov.yandexschoolanchugov.utils.GalleryLongClickListener;
 
 import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
 
@@ -38,7 +39,7 @@ import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKE
  * Created by romananchugov on 11.04.2018.
  */
 
-public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.ViewHolder> implements View.OnLongClickListener{
+public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.ViewHolder>{
     public static final String TAG = GalleryListAdapter.class.getSimpleName();
 
     private HashMap<Integer, Call<DownloadLink>> callsMap;
@@ -72,7 +73,9 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
                 new GalleryClickListener(position, galleryItems, activity)
         );
 
-        holder.imageView.setOnLongClickListener(this);
+        holder.imageView.setOnLongClickListener(
+                new GalleryLongClickListener(galleryItems.get(position), activity)
+        );
     }
 
     @Override
@@ -113,16 +116,6 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
     @Override
     public int getItemCount() {
         return galleryItems.size();
-    }
-
-    @Override
-    public boolean onLongClick(View view) {
-        if(!activity.isSelectionMode()) {
-            activity.setSelectionMode(true);
-            activity.addViewInSelected((ImageView) view);
-            activity.updateToolbar();
-        }
-        return true;
     }
 
     public void firstLoad(final GalleryItem item, final int position, final GalleryListAdapter.ViewHolder holder) {

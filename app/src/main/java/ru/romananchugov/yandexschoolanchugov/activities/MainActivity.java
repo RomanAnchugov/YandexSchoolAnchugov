@@ -46,10 +46,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
+import ru.romananchugov.yandexschoolanchugov.fragmetns.DeletePhotosDialog;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.GalleryListFragment;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.LogoutAcceptDialog;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.UploadingProgressDialog;
 import ru.romananchugov.yandexschoolanchugov.interfaces.DiskClientApi;
+import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 import ru.romananchugov.yandexschoolanchugov.models.UploaderWrapper;
 import ru.romananchugov.yandexschoolanchugov.network.RestClientUtil;
 
@@ -59,7 +61,7 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
-    private static final String GALLERY_FRAGMENT_TAG = "Gallery";
+    public static final String GALLERY_FRAGMENT_TAG = "Gallery";
     public static final String CLIENT_ID = "959666c7ee9942f6b9ffec283205e35c";
     public static final String AUTH_URL = "https://oauth.yandex.ru/authorize?response_type=token&client_id=" + CLIENT_ID;
     public static final String USERNAME = "ymra.username";
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
 
     private List<ImageView> selectedViews;
+    private List<GalleryItem> selectedItems;
     private boolean isSelectionMode;
 
     @Override
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         selectedViews = new ArrayList<>();
+        selectedItems = new ArrayList<>();
         isSelectionMode = false;
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -90,6 +94,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
                 closeKeyboard();
+                cancelSelectionMode();
             }
 
             @Override
@@ -138,7 +143,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return
+        switch (item.getItemId()){
+            case R.id.delete_forever:
+                DeletePhotosDialog.newInstance(selectedItems, this).show(getSupportFragmentManager(), "delete dialog");
+                break;
+        }
+        return false;
     }
 
     @Override
@@ -329,15 +339,19 @@ public class MainActivity extends AppCompatActivity
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(frameLayout.getWindowToken(), 0);
     }
-    
-    public void addViewInSelected(ImageView imageView){
+
+    //добавляет новый элемент в выбранные
+    public void addViewInSelected(ImageView imageView, GalleryItem galleryItem){
         selectedViews.add(imageView);
+        selectedItems.add(galleryItem);
         updateToolbar();
         imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_preload_placeholder));
         Log.i(TAG, "addViewInSelected: " + selectedViews.size());
     }
-    public void removeViewFromSelected(ImageView imageView){
+    //удаляет элемент из выбранных
+    public void removeViewFromSelected(ImageView imageView, GalleryItem galleryItem){
         selectedViews.remove(imageView);
+        selectedItems.remove(galleryItem);
         updateToolbar();
         imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_image));
         Log.i(TAG, "removeViewFromSelected: " + selectedViews.size());

@@ -50,9 +50,9 @@ public class GalleryClickListener implements View.OnClickListener {
 
     public void toggleSelection(ImageView imageView){
         if(activity.getSelectedViews().contains(imageView)){
-            activity.removeViewFromSelected(imageView);
+            activity.removeViewFromSelected(imageView, galleryItems.get(position));
         }else{
-            activity.addViewInSelected(imageView);
+            activity.addViewInSelected(imageView, galleryItems.get(position));
         }
     }
 }

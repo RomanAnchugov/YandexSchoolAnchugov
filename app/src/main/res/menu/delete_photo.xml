@@ -2,12 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:title="@string/forever_delete"
-        android:icon="@drawable/ic_forever_delete"
-        app:showAsAction="ifRoom"/>
-
-
     <item
+        android:id="@+id/delete_forever"
         android:title="@string/delete"
         android:icon="@drawable/ic_trash_delete"
         app:showAsAction="always"/>

@@ -17,4 +17,6 @@
     <string name="delete">delete</string>
     <string name="forever_delete">forever delete</string>
     <string name="selection_placeholder">Выбрано %1$s</string>
+    <string name="delete_dialog_title">Удалить фотографии?</string>
+    <string name="delete_dialog_message">Все фотографии будут перемещены в корзину</string>
 </resources>

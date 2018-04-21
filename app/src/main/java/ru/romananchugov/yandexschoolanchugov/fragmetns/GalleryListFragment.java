@@ -140,6 +140,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onRefresh() {
         getLoaderManager().restartLoader(0, null, this);
+        activity.cancelSelectionMode();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -171,8 +172,11 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         if (galleryItemList != null) {
             galleryItems.addAll(galleryItemList);
         }
+        adapter.notifyDataSetChanged();
+    }
 
-
+    public void removeItem(GalleryItem item){
+        galleryItems.remove(item);
         adapter.notifyDataSetChanged();
     }
 }
