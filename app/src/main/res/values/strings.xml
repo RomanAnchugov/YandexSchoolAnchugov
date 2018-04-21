@@ -16,4 +16,5 @@
     <string name="no">Нет</string>
     <string name="delete">delete</string>
     <string name="forever_delete">forever delete</string>
+    <string name="selection_placeholder">Выбрано %1$s</string>
 </resources>

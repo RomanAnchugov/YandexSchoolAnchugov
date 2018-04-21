@@ -116,10 +116,10 @@ public class SliderAdapter extends PagerAdapter {
 
         DrawableCrossFadeFactory.Builder builder = new DrawableCrossFadeFactory.Builder();
         builder.setCrossFadeEnabled(false);
-        DrawableCrossFadeFactory fadeFactory = builder.build();
         Glide
                 .with(activity)
                 .load(item.getDownloadLink())
+                .thumbnail(.5f)
                 .apply(new RequestOptions()
                         .error(R.drawable.ic_error_placeholder)
                         .placeholder(R.drawable.ic_slider_placeholder)

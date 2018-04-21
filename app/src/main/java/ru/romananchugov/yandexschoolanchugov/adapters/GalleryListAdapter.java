@@ -1,13 +1,10 @@
 package ru.romananchugov.yandexschoolanchugov.adapters;
 
-import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +26,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
+import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
 import ru.romananchugov.yandexschoolanchugov.interfaces.DiskClientApi;
 import ru.romananchugov.yandexschoolanchugov.models.DownloadLink;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
@@ -41,17 +39,17 @@ import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKE
  */
 
 public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.ViewHolder> implements View.OnLongClickListener{
-
     public static final String TAG = GalleryListAdapter.class.getSimpleName();
 
     private HashMap<Integer, Call<DownloadLink>> callsMap;
     private HashMap<Integer, Request> glidesMap;
     private ImageView imageView;
-    private Fragment fragment;
+    //private Fragment fragment;
     private List<GalleryItem> galleryItems;
+    private MainActivity activity;
 
-    public GalleryListAdapter(Fragment fragment, List<GalleryItem> galleryItems){
-        this.fragment = fragment;
+    public GalleryListAdapter(MainActivity activity, List<GalleryItem> galleryItems){
+        this.activity = activity;
         this.galleryItems = galleryItems;
         callsMap = new HashMap<>();
         glidesMap = new HashMap<>();
@@ -59,7 +57,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        imageView = (ImageView) LayoutInflater.from(fragment.getContext())
+        imageView = (ImageView) LayoutInflater.from(activity)
                 .inflate(R.layout.gallery_item_view, parent, false);
 
         return new ViewHolder(imageView);
@@ -67,12 +65,13 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Drawable placeHolder = fragment.getActivity().getResources().getDrawable(R.drawable.ic_preload_placeholder);
+        Drawable placeHolder = activity.getResources().getDrawable(R.drawable.ic_preload_placeholder);
         holder.bindDrawable(placeHolder);
 
         holder.imageView.setOnClickListener(
-                new GalleryClickListener(position, galleryItems, fragment)
+                new GalleryClickListener(position, galleryItems, activity)
         );
+
         holder.imageView.setOnLongClickListener(this);
     }
 
@@ -116,9 +115,19 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         return galleryItems.size();
     }
 
+    @Override
+    public boolean onLongClick(View view) {
+        if(!activity.isSelectionMode()) {
+            activity.setSelectionMode(true);
+            activity.addViewInSelected((ImageView) view);
+            activity.updateToolbar();
+        }
+        return true;
+    }
+
     public void firstLoad(final GalleryItem item, final int position, final GalleryListAdapter.ViewHolder holder) {
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(fragment.getActivity());
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
         String token = preferences.getString(TOKEN, null);
 
         Retrofit.Builder builder = new Retrofit.Builder()
@@ -147,11 +156,11 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         callsMap.put(position, call);
     }
 
-    @SuppressLint("ResourceAsColor")
     public void glideLoading(int position, GalleryListAdapter.ViewHolder holder) {
         Request request = Glide
-                .with(fragment)
+                .with(activity)
                 .load(galleryItems.get(position).getDownloadLink())
+                .thumbnail(.5f)
                 .apply(new RequestOptions()
                         .error(R.drawable.ic_refresh_black_24dp)
                         .placeholder(R.drawable.image_placeholder)
@@ -164,16 +173,9 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         glidesMap.put(position, request);
     }
 
-    @Override
-    public boolean onLongClick(View view) {
-        Toolbar toolbar = fragment.getActivity().findViewById(R.id.toolbar);
-        toolbar.setTitle("deleting");
-        return true;
-    }
+    public class ViewHolder extends RecyclerView.ViewHolder{
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        ImageView imageView;
+        private ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);

@@ -1,16 +1,14 @@
 package ru.romananchugov.yandexschoolanchugov.utils;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import java.io.Serializable;
 import java.util.List;
 
-import ru.romananchugov.yandexschoolanchugov.R;
+import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.SliderDialogFragment;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 
@@ -21,15 +19,14 @@ import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 public class GalleryClickListener implements View.OnClickListener {
 
     private static final String TAG = "GalleryClickListener";
-
-    private int position;
     private final List<GalleryItem> galleryItems;
-    private Fragment fragment;
+    private int position;
+    private MainActivity activity;
 
-    public GalleryClickListener(int position, List<GalleryItem> galleryItems, Fragment fragment) {
+    public GalleryClickListener(int position, List<GalleryItem> galleryItems, MainActivity activity) {
         this.position = position;
         this.galleryItems = galleryItems;
-        this.fragment = fragment;
+        this.activity = activity;
     }
 
     @Override
@@ -40,16 +37,22 @@ public class GalleryClickListener implements View.OnClickListener {
 
         ImageView imageView = (ImageView) view;
 
-        if(imageView.getDrawable().equals(R.drawable.ic_refresh_black_24dp)){
-            Log.i(TAG, "onClick: refresh click");
-
-        }else {
-            FragmentTransaction ft = fragment.getActivity().getSupportFragmentManager().beginTransaction();
+        if (!activity.isSelectionMode()) {
+            FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             SliderDialogFragment slider = SliderDialogFragment.newInstance();
             slider.setArguments(bundle);
             slider.show(ft, "slider");
+        } else {
+            toggleSelection(imageView);
         }
+    }
 
+    public void toggleSelection(ImageView imageView){
+        if(activity.getSelectedViews().contains(imageView)){
+            activity.removeViewFromSelected(imageView);
+        }else{
+            activity.addViewInSelected(imageView);
+        }
     }
 }

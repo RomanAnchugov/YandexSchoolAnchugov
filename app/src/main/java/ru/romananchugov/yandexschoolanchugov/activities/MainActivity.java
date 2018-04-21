@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.yandex.disk.rest.Credentials;
@@ -34,6 +35,8 @@ import com.yandex.disk.rest.json.Link;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,14 +68,22 @@ public class MainActivity extends AppCompatActivity
 
     private UploadingProgressDialog progressFragmentDialog;
 
+    private Toolbar toolbar;
+
+    private List<ImageView> selectedViews;
+    private boolean isSelectionMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        selectedViews = new ArrayList<>();
+        isSelectionMode = false;
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
@@ -126,6 +137,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
             case PICK_IMAGE:
@@ -155,7 +171,7 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()){
             case R.id.gallery_menu_item:
                 if(!isGalleryVisible) {
-                    addFragment(GalleryListFragment.newInstance("Я.Галерея"), GALLERY_FRAGMENT_TAG);
+                    addFragment(GalleryListFragment.newInstance("Я.Галерея", this), GALLERY_FRAGMENT_TAG);
                     item.setChecked(true);
                 }
                 break;
@@ -172,9 +188,34 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        if(isSelectionMode){
+            cancelSelectionMode();
+        }else{
+            super.onBackPressed();
+        }
+    }
+
+    public boolean isSelectionMode() {
+        return isSelectionMode;
+    }
+
+    public void setSelectionMode(boolean selectionMode) {
+        isSelectionMode = selectionMode;
+        if(isSelectionMode){
+            toolbar.getMenu().clear();
+            toolbar.inflateMenu(R.menu.delete_photo);
+        }
+    }
+
+    public List<ImageView> getSelectedViews() {
+        return selectedViews;
+    }
+
     private void startFragment() {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, GalleryListFragment.newInstance("Я.Галерея"), GALLERY_FRAGMENT_TAG)
+                .add(R.id.fragment_container, GalleryListFragment.newInstance("Я.Галерея", this), GALLERY_FRAGMENT_TAG)
                 .commit();
     }
 
@@ -188,7 +229,6 @@ public class MainActivity extends AppCompatActivity
         editor.putString(TOKEN, null);
         editor.apply();
         LogoutAcceptDialog.newInstance().show(getSupportFragmentManager(), "dialog");
-        //finish();
     }
 
     public void onLogin() {
@@ -218,6 +258,7 @@ public class MainActivity extends AppCompatActivity
         editor.apply();
     }
 
+    //ссылка для загрузки файла на диск
     public void getUploadLink(final Credentials credentials, final File file){
         final String token = credentials.getToken();
 
@@ -252,6 +293,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    //получаем путь выбранной фотографии
     public String getPath(Uri uri) {
 
         String path = null;
@@ -287,7 +329,35 @@ public class MainActivity extends AppCompatActivity
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(frameLayout.getWindowToken(), 0);
     }
+    
+    public void addViewInSelected(ImageView imageView){
+        selectedViews.add(imageView);
+        updateToolbar();
+        imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_preload_placeholder));
+        Log.i(TAG, "addViewInSelected: " + selectedViews.size());
+    }
+    public void removeViewFromSelected(ImageView imageView){
+        selectedViews.remove(imageView);
+        updateToolbar();
+        imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_image));
+        Log.i(TAG, "removeViewFromSelected: " + selectedViews.size());
+    }
 
+    public void updateToolbar(){
+        toolbar.setTitle(
+                getResources()
+                        .getString(R.string.selection_placeholder,
+                                String.valueOf(getSelectedViews().size())));
+    }
+
+    public void cancelSelectionMode(){
+        selectedViews.clear();
+        toolbar.getMenu().clear();
+        toolbar.setTitle(getResources().getString(R.string.app_name));
+        isSelectionMode = false;
+    }
+
+    //асинхронная загрузка файла на диск
     @SuppressLint("StaticFieldLeak")
     private class AsyncUpload extends AsyncTask<UploaderWrapper, Integer, Void>{
 

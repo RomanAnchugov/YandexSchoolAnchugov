@@ -51,13 +51,15 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private List<GalleryItem> galleryItems;
+    private MainActivity activity;
 
 
-    private GalleryListFragment(String title){
+    private GalleryListFragment(String title, MainActivity activity){
+        this.activity = activity;
         this.title = title;
     }
-    public static GalleryListFragment newInstance(String title){
-        GalleryListFragment f = new GalleryListFragment(title);
+    public static GalleryListFragment newInstance(String title, MainActivity activity){
+        GalleryListFragment f = new GalleryListFragment(title,activity);
         return f;
     }
 
@@ -80,7 +82,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
 
         galleryItems = new ArrayList<>();
         recyclerView = v.findViewById(R.id.gallery_recycler_view);
-        adapter = new GalleryListAdapter(this, galleryItems);
+        adapter = new GalleryListAdapter(activity, galleryItems);
 
         refresher = v.findViewById(R.id.list_fragment_refresher);
         refresher.setColorSchemeResources(
