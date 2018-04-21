@@ -345,16 +345,19 @@ public class MainActivity extends AppCompatActivity
         selectedViews.add(imageView);
         selectedItems.add(galleryItem);
         updateToolbar();
-        imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_preload_placeholder));
-        Log.i(TAG, "addViewInSelected: " + selectedViews.size());
+
+        int padding = 25;
+        imageView.setPadding(padding,padding,padding,padding);
+        imageView.setBackgroundColor(getResources().getColor(R.color.blue));
     }
     //удаляет элемент из выбранных
     public void removeViewFromSelected(ImageView imageView, GalleryItem galleryItem){
         selectedViews.remove(imageView);
         selectedItems.remove(galleryItem);
         updateToolbar();
-        imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_image));
-        Log.i(TAG, "removeViewFromSelected: " + selectedViews.size());
+
+        imageView.setPadding(1,1,1,1);
+        imageView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
     }
 
     public void updateToolbar(){
@@ -365,7 +368,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void cancelSelectionMode(){
+        for(ImageView view:selectedViews){
+            view.setPadding(1,1,1,1);
+        }
         selectedViews.clear();
+        selectedItems.clear();
         toolbar.getMenu().clear();
         toolbar.setTitle(getResources().getString(R.string.app_name));
         isSelectionMode = false;
