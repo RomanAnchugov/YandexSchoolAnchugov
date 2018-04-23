@@ -43,7 +43,7 @@ public class GalleryClickListener implements View.OnClickListener {
             SliderDialogFragment slider = SliderDialogFragment.newInstance();
             slider.setArguments(bundle);
             slider.show(ft, "slider");
-        } else {
+        } else{
             toggleSelection(imageView);
         }
     }

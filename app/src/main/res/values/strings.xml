@@ -19,4 +19,8 @@
     <string name="selection_placeholder">Выбрано %1$s</string>
     <string name="delete_dialog_title">Удалить фотографии?</string>
     <string name="delete_dialog_message">Все фотографии будут перемещены в корзину</string>
+    <string name="share">share</string>
+    <string name="uploading_failure">При загрузке возникли проблемы</string>
+    <string name="successful_uploading">Фото успешно загружено</string>
+    <string name="uploading_name_conflict">Фото с таким именем уже существует</string>
 </resources>

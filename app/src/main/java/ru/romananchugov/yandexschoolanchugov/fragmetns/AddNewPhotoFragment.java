@@ -1,7 +1,6 @@
 package ru.romananchugov.yandexschoolanchugov.fragmetns;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import ru.romananchugov.yandexschoolanchugov.R;
+import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
 
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
 
@@ -24,25 +24,26 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
 public class AddNewPhotoFragment extends Fragment {
     private static final String TAG = AddNewPhotoFragment.class.getSimpleName();
 
-    private Activity activity;
-
+    private MainActivity activity;
+    private String title;
     private LinearLayout linearLayout;
 
 
-    private AddNewPhotoFragment(Activity activity){
+    private AddNewPhotoFragment(MainActivity activity, String title){
+        this.title = title;
         this.activity = activity;
     }
 
     @NonNull
-    public static AddNewPhotoFragment newInstance(Activity activity){
-        return new AddNewPhotoFragment(activity);
+    public static AddNewPhotoFragment newInstance(MainActivity activity, String title){
+        return new AddNewPhotoFragment(activity, title);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.add_new_photo_fragment, container, false);
-
+        activity.getSupportActionBar().setTitle(title);
         linearLayout = v.findViewById(R.id.upload_image_ll);
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,5 +60,18 @@ public class AddNewPhotoFragment extends Fragment {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+
+//        Intent intent = new Intent();
+//        intent.setAction(Intent.ACTION_PICK);
+//
+//        File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+//        String pictureDirectoryPath = pictureDirectory.getPath();
+//        Uri data = Uri.parse(pictureDirectoryPath);
+//        intent.setDataAndType(data, "image/*");
+//
+//        activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
     }
+
+
+
 }

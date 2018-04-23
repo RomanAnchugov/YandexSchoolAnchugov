@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,8 +80,6 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
     @Override
     public void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
         if(holder.getAdapterPosition() >= 0) {
-            Log.i(TAG, "onViewDetachedFromWindow: for postion" + holder.getAdapterPosition());
-
             int position = holder.getAdapterPosition();
 
             if(callsMap.get(position) != null) {
@@ -100,7 +97,6 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
 
     @Override
     public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
-        Log.i(TAG, "onViewAttachedToWindow: view attach to window " + holder.getAdapterPosition());
         if(holder.getAdapterPosition() >= 0){
             int position = holder.getAdapterPosition();
             if (galleryItems.get(position).getDownloadLink() != null) {
@@ -136,8 +132,10 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         call.enqueue(new Callback<DownloadLink>() {
             @Override
             public void onResponse(Call<DownloadLink> call, Response<DownloadLink> response) {
-                item.setDownloadLink(response.body().getHref());
-                glideLoading(position, holder);
+                if(response.body() != null) {
+                    item.setDownloadLink(response.body().getHref());
+                    glideLoading(position, holder);
+                }
             }
 
             @Override
@@ -153,7 +151,6 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         Request request = Glide
                 .with(activity)
                 .load(galleryItems.get(position).getDownloadLink())
-                .thumbnail(.5f)
                 .apply(new RequestOptions()
                         .error(R.drawable.ic_refresh_black_24dp)
                         .placeholder(R.drawable.image_placeholder)

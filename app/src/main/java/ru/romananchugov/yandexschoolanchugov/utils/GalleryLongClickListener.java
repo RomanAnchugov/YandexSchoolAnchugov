@@ -27,6 +27,6 @@ public class GalleryLongClickListener implements View.OnLongClickListener {
             activity.addViewInSelected((ImageView) view, galleryItem);
             activity.updateToolbar();
         }
-        return false;
+        return true;
     }
 }

@@ -150,10 +150,10 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     }
 
     public void goToNewPhotoFragment(){
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        activity.cancelSelectionMode();
+        FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        AddNewPhotoFragment addNewPhotoFragment = AddNewPhotoFragment.newInstance(getActivity());
-
+        AddNewPhotoFragment addNewPhotoFragment = AddNewPhotoFragment.newInstance(activity, "Добавить новое фото");
         ft.replace(R.id.fragment_container, addNewPhotoFragment).addToBackStack(null);
         ft.commit();
     }

@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.yandex.disk.rest.json.Link;
 
@@ -90,7 +91,6 @@ public class DeletePhotosDialog extends DialogFragment {
             call.enqueue(new Callback<Link>() {
                 @Override
                 public void onResponse(Call<Link> call, Response<Link> response) {
-                    Log.i(TAG, "onResponse: " + selectedItems.size());
                     selectedItems.remove(item);
 
                     GalleryListFragment galleryListFragment =
@@ -100,12 +100,13 @@ public class DeletePhotosDialog extends DialogFragment {
                     if(selectedItems.size() == 0){
                         uploadingProgressDialog.dismiss();
                     }
-                    Log.i(TAG, "onResponse: " + selectedItems.size());
                 }
 
                 @Override
                 public void onFailure(Call<Link> call, Throwable t) {
-
+                    Log.i(TAG, "onFailure: " + t.getMessage());
+                    Toast.makeText(activity, R.string.uploading_failure, Toast.LENGTH_LONG).show();
+                    uploadingProgressDialog.dismiss();
                 }
             });
         }

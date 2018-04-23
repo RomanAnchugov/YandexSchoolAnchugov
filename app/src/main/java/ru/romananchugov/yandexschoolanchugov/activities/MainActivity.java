@@ -1,9 +1,11 @@
 package ru.romananchugov.yandexschoolanchugov.activities;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -61,12 +64,20 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
+    // Storage Permissions
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
     public static final String GALLERY_FRAGMENT_TAG = "Gallery";
     public static final String CLIENT_ID = "959666c7ee9942f6b9ffec283205e35c";
     public static final String AUTH_URL = "https://oauth.yandex.ru/authorize?response_type=token&client_id=" + CLIENT_ID;
     public static final String USERNAME = "ymra.username";
     public static final String TOKEN = "ymra.token";
     private static final String TAG = "MainActivity";
+    private static final int PADDING = 25;
 
     private UploadingProgressDialog progressFragmentDialog;
 
@@ -81,6 +92,7 @@ public class MainActivity extends AppCompatActivity
         setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        verifyStoragePermissions(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -203,24 +215,13 @@ public class MainActivity extends AppCompatActivity
         if(isSelectionMode){
             cancelSelectionMode();
         }else{
+            getSupportActionBar().setTitle(R.string.app_name);
             super.onBackPressed();
         }
     }
 
     public boolean isSelectionMode() {
         return isSelectionMode;
-    }
-
-    public void setSelectionMode(boolean selectionMode) {
-        isSelectionMode = selectionMode;
-        if(isSelectionMode){
-            toolbar.getMenu().clear();
-            toolbar.inflateMenu(R.menu.delete_photo);
-        }
-    }
-
-    public List<ImageView> getSelectedViews() {
-        return selectedViews;
     }
 
     private void startFragment() {
@@ -291,7 +292,7 @@ public class MainActivity extends AppCompatActivity
                     new AsyncUpload().execute(uploaderWrapper);
                 }else{
                     Log.i(TAG, "onResponse: " + response);
-                    Toast.makeText(getBaseContext(), "Фото с таким именем уже существует", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), R.string.uploading_name_conflict, Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -340,17 +341,32 @@ public class MainActivity extends AppCompatActivity
         imm.hideSoftInputFromWindow(frameLayout.getWindowToken(), 0);
     }
 
-    //добавляет новый элемент в выбранные
+    //установка значения состояния выделения
+    public void setSelectionMode(boolean selectionMode) {
+        isSelectionMode = selectionMode;
+        if(isSelectionMode){
+            toolbar.getMenu().clear();
+            toolbar.inflateMenu(R.menu.selection_mode_menu);
+            toolbar.setBackgroundColor(getResources().getColor(R.color.blue));
+            toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        }
+    }
+
+    public List<ImageView> getSelectedViews() {
+        return selectedViews;
+    }
+
+    //добавление нового элемента в выбранные
     public void addViewInSelected(ImageView imageView, GalleryItem galleryItem){
         selectedViews.add(imageView);
         selectedItems.add(galleryItem);
         updateToolbar();
 
-        int padding = 25;
-        imageView.setPadding(padding,padding,padding,padding);
-        imageView.setBackgroundColor(getResources().getColor(R.color.blue));
+        imageView.setPadding(PADDING, PADDING, PADDING, PADDING);
+        imageView.setBackgroundColor(getResources().getColor(R.color.yellow));
     }
-    //удаляет элемент из выбранных
+
+    //удаление элементов из выбранных
     public void removeViewFromSelected(ImageView imageView, GalleryItem galleryItem){
         selectedViews.remove(imageView);
         selectedItems.remove(galleryItem);
@@ -360,6 +376,7 @@ public class MainActivity extends AppCompatActivity
         imageView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
     }
 
+    //обновление информации на тулбаре при выделении
     public void updateToolbar(){
         toolbar.setTitle(
                 getResources()
@@ -367,14 +384,18 @@ public class MainActivity extends AppCompatActivity
                                 String.valueOf(getSelectedViews().size())));
     }
 
+    //отключение состояния выделения
     public void cancelSelectionMode(){
         for(ImageView view:selectedViews){
             view.setPadding(1,1,1,1);
+            view.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         }
         selectedViews.clear();
         selectedItems.clear();
         toolbar.getMenu().clear();
         toolbar.setTitle(getResources().getString(R.string.app_name));
+        toolbar.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.black));
         isSelectionMode = false;
     }
 
@@ -393,7 +414,6 @@ public class MainActivity extends AppCompatActivity
             Link link = uploaderWrapper.getLink();
 
             try {
-
                 client.uploadFile(link, true, file, null);
             } catch (IOException e) {
                 Log.i(TAG, "doInBackground: " + e.getMessage());
@@ -407,11 +427,25 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Toast.makeText(getApplicationContext(), "Фото успешно загружено", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.successful_uploading, Toast.LENGTH_SHORT).show();
             progressFragmentDialog.dismiss();
         }
     }
 
+    //Запрос на запись файлов для api>23
+    public static void verifyStoragePermissions(Activity activity) {
+        //Проверяем есть ли у нас доступ
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            //Доступа нет, спрашиваем у пользователя
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
+    }
 
 
 }
