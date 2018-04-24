@@ -1,13 +1,14 @@
 package ru.romananchugov.yandexschoolanchugov.fragmetns;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,7 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
  */
 
 @SuppressLint("ValidFragment")
-public class AddNewPhotoFragment extends Fragment {
+public class AddNewPhotoFragment extends DialogFragment {
     private static final String TAG = AddNewPhotoFragment.class.getSimpleName();
 
     private MainActivity activity;
@@ -47,7 +48,9 @@ public class AddNewPhotoFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.add_new_photo_fragment, container, false);
-        activity.getSupportActionBar().setTitle(title);
+        if(activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setTitle(title);
+        }
         button = v.findViewById(R.id.open_gallery_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +74,12 @@ public class AddNewPhotoFragment extends Fragment {
         activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
     }
 
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        if(activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+        }
+        super.onDismiss(dialog);
 
-
+    }
 }

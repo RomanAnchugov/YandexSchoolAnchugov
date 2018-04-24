@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -151,11 +150,12 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
 
     public void goToNewPhotoFragment(){
         activity.cancelSelectionMode();
-        FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        AddNewPhotoFragment addNewPhotoFragment = AddNewPhotoFragment.newInstance(activity, "Добавить новое фото");
-        ft.replace(R.id.fragment_container, addNewPhotoFragment).addToBackStack(null);
-        ft.commit();
+//        FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
+//        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+//        AddNewPhotoFragment addNewPhotoFragment = AddNewPhotoFragment.newInstance(activity, "Добавить новое фото");
+//        ft.replace(R.id.fragment_container, addNewPhotoFragment).addToBackStack(null);
+//        ft.commit();
+        AddNewPhotoFragment.newInstance(activity, getString(R.string.add_new_photo)).show(getFragmentManager(), "dialog");
     }
 
     public void setData(List<GalleryItem> galleryItemList) {

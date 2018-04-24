@@ -8,8 +8,7 @@
         android:id="@+id/slider_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/black"
-        tools:background="@android:color/white"/>
+        android:background="@android:color/black"/>
 
 
     <RelativeLayout
@@ -18,24 +17,44 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="40dp"
-        android:padding="20dp">
+        tools:background="#fff">
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/images_count_text_view"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:textSize="16sp"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"/>
+            android:background="#40000000"
+            android:padding="10dp"
+            >
+            <ImageButton
+                android:id="@+id/slider_back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_back_white"
+                android:background="@android:color/transparent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="20dp"/>
 
+            <TextView
+                android:id="@+id/images_count_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:background="#40000000"
+            android:padding="10dp">
         <TextView
             android:id="@+id/image_title_text_view"
             android:layout_width="wrap_content"
@@ -43,8 +62,8 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_above="@id/image_date_text_view"
-            />
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp" />
 
         <TextView
             android:id="@+id/image_date_text_view"
@@ -53,7 +72,9 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_alignParentBottom="true"/>
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"/>
+        </LinearLayout>
     </RelativeLayout>
 
 

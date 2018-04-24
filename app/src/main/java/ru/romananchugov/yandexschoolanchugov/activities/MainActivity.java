@@ -271,7 +271,7 @@ public class MainActivity extends AppCompatActivity
         editor.apply();
     }
 
-    //ссылка для загрузки файла на диск
+    //получаем ссылку для загрузки файла на диск
     public void getUploadLink(final Credentials credentials, final File file){
         final String token = credentials.getToken();
 
@@ -407,10 +407,10 @@ public class MainActivity extends AppCompatActivity
 
     //асинхронная загрузка файла на диск
     @SuppressLint("StaticFieldLeak")
-    private class AsyncUpload extends AsyncTask<UploaderWrapper, Integer, Void>{
+    private class AsyncUpload extends AsyncTask<UploaderWrapper, Integer, Boolean>{
 
         @Override
-        protected Void doInBackground(UploaderWrapper... uploaderWrappers) {
+        protected Boolean doInBackground(UploaderWrapper... uploaderWrappers) {
             UploaderWrapper uploaderWrapper = uploaderWrappers[0];
 
             Credentials credentials = uploaderWrapper.getCredentials();
@@ -422,18 +422,26 @@ public class MainActivity extends AppCompatActivity
             try {
                 client.uploadFile(link, true, file, null);
             } catch (IOException e) {
-                Log.i(TAG, "doInBackground: " + e.getMessage());
                 e.printStackTrace();
+                return true;
             } catch (ServerException e) {
-                Log.i(TAG, "doInBackground: " + e.getMessage());
                 e.printStackTrace();
+                return true;
+            } catch (RuntimeException e){
+                e.printStackTrace();
+                return true;
             }
-            return null;
+
+            return false;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            Toast.makeText(getApplicationContext(), R.string.successful_uploading, Toast.LENGTH_SHORT).show();
+        protected void onPostExecute(Boolean isError) {
+            if(!isError) {
+                Toast.makeText(getApplicationContext(), R.string.successful_uploading, Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(getApplicationContext(), R.string.error, Toast.LENGTH_SHORT).show();
+            }
             progressFragmentDialog.dismiss();
         }
     }

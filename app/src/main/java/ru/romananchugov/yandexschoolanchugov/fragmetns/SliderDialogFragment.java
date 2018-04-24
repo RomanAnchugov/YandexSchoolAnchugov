@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,7 +25,7 @@ import ru.romananchugov.yandexschoolanchugov.utils.Keys;
  */
 
 @SuppressLint("ValidFragment")
-public class SliderDialogFragment extends DialogFragment {
+public class SliderDialogFragment extends DialogFragment implements View.OnClickListener{
 
     private static final String TAG = SliderDialogFragment.class.getSimpleName();
 
@@ -35,8 +36,8 @@ public class SliderDialogFragment extends DialogFragment {
     private TextView imagesCountTextView;
     private TextView imageTitleTextView;
     private TextView imageDateTextView;
+    private ImageButton backButton;
 
-    private SliderAdapter sliderAdapter;
     private ViewPager viewPager;
 
     private SliderDialogFragment(){
@@ -65,6 +66,8 @@ public class SliderDialogFragment extends DialogFragment {
         imageTitleTextView = v.findViewById(R.id.image_title_text_view);
         imageDateTextView = v.findViewById(R.id.image_date_text_view);
         infoContainer = v.findViewById(R.id.slider_info_container);
+        backButton = v.findViewById(R.id.slider_back_button);
+        backButton.setOnClickListener(this);
 
         viewPager = v.findViewById(R.id.slider_view_pager);
         viewPager.setAdapter(new SliderAdapter(getActivity(), galleryItems, infoContainer));
@@ -75,6 +78,14 @@ public class SliderDialogFragment extends DialogFragment {
         return v;
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.slider_back_button:
+                this.dismiss();
+                break;
+        }
+    }
 
 
     public void setCurrentImage(int position){
@@ -83,8 +94,7 @@ public class SliderDialogFragment extends DialogFragment {
     }
 
     public void displayImageInfo(int position){
-        //TODO: placeholder
-        imagesCountTextView.setText((position + 1) + " из " +  galleryItems.size());
+        imagesCountTextView.setText(getResources().getString(R.string.slider_position, (position + 1), galleryItems.size()));
 
         GalleryItem item = galleryItems.get(position);
         imageTitleTextView.setText(item.getName());
@@ -107,5 +117,4 @@ public class SliderDialogFragment extends DialogFragment {
 
         }
     };
-
 }
