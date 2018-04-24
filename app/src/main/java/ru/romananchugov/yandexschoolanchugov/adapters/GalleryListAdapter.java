@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,12 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,6 +34,7 @@ import ru.romananchugov.yandexschoolanchugov.utils.GalleryClickListener;
 import ru.romananchugov.yandexschoolanchugov.utils.GalleryLongClickListener;
 
 import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
 
 /**
  * Created by romananchugov on 11.04.2018.
@@ -90,7 +92,8 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
                 }
             }
             if(glidesMap.get(position) != null && glidesMap.get(position).isRunning()) {
-                glidesMap.get(position).pause();
+                glidesMap.get(position).clear();
+                glidesMap.remove(position);
             }
         }
     }
@@ -102,7 +105,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
             if (galleryItems.get(position).getDownloadLink() != null) {
                 //if(glidesMap.containsKey(position) && glidesMap.get(position).isPaused()) glidesMap.get(position).recycle();
                 glideLoading(position, holder);
-            } else {
+            } else{
                 galleryItems.get(position).setDownloadLink("");
                 firstLoad(galleryItems.get(position), position, holder);
             }
@@ -120,7 +123,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         String token = preferences.getString(TOKEN, null);
 
         Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("https://cloud-api.yandex.net/v1/disk/")
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create());
 
         final Retrofit retrofit = builder.build();
@@ -128,21 +131,25 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         DiskClientApi clientApi = retrofit.create(DiskClientApi.class);
         final Call<DownloadLink> call = clientApi.getDownloadFileLink("OAuth " + token, item.getPath());
 
-
-        call.enqueue(new Callback<DownloadLink>() {
-            @Override
-            public void onResponse(Call<DownloadLink> call, Response<DownloadLink> response) {
-                if(response.body() != null) {
-                    item.setDownloadLink(response.body().getHref());
-                    glideLoading(position, holder);
+        try {
+            call.enqueue(new Callback<DownloadLink>() {
+                @Override
+                public void onResponse(Call<DownloadLink> call, Response<DownloadLink> response) {
+                    if(response.body() != null) {
+                        item.setDownloadLink(response.body().getHref());
+                        glideLoading(position, holder);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<DownloadLink> call, Throwable t) {
+                @Override
+                public void onFailure(Call<DownloadLink> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+        }catch (OutOfMemoryError e){
+            e.printStackTrace();
+            Log.i(TAG, "firstLoad: error" );
+        }
 
         callsMap.put(position, call);
     }
@@ -154,13 +161,25 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
                 .apply(new RequestOptions()
                         .error(R.drawable.ic_refresh_black_24dp)
                         .placeholder(R.drawable.image_placeholder)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .priority(Priority.NORMAL)
                         .timeout(60000)
                         )
                 .into(holder.imageView).getRequest();
 
         glidesMap.put(position, request);
+    }
+
+    public void stopLoading(){
+        for(Map.Entry<Integer, Request> entry: glidesMap.entrySet()){
+            if(entry.getValue().isRunning()){
+                entry.getValue().clear();
+            }
+        }
+        for(Map.Entry<Integer, Call<DownloadLink>> entry: callsMap.entrySet()){
+            entry.getValue().cancel();
+        }
+        glidesMap.clear();
+        callsMap.clear();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,8 +111,6 @@ public class SliderAdapter extends PagerAdapter {
     }
 
     private void glideLoading(GalleryItem item, ImageView imageView, int position) {
-        Log.i(TAG, "glideLoading: loadign for postion " + position + "|url - " + item.getDownloadLink());
-
         DrawableCrossFadeFactory.Builder builder = new DrawableCrossFadeFactory.Builder();
         builder.setCrossFadeEnabled(false);
         Glide
@@ -123,7 +120,6 @@ public class SliderAdapter extends PagerAdapter {
                 .apply(new RequestOptions()
                         .error(R.drawable.ic_error_placeholder)
                         .placeholder(R.drawable.ic_slider_placeholder)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .priority(Priority.IMMEDIATE)
                         .timeout(60000))
                 .into(imageView);

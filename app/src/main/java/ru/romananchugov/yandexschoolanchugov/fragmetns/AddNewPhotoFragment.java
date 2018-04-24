@@ -2,14 +2,18 @@ package ru.romananchugov.yandexschoolanchugov.fragmetns;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.Button;
+
+import java.io.File;
 
 import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
@@ -26,7 +30,7 @@ public class AddNewPhotoFragment extends Fragment {
 
     private MainActivity activity;
     private String title;
-    private LinearLayout linearLayout;
+    private Button button;
 
 
     private AddNewPhotoFragment(MainActivity activity, String title){
@@ -44,8 +48,8 @@ public class AddNewPhotoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.add_new_photo_fragment, container, false);
         activity.getSupportActionBar().setTitle(title);
-        linearLayout = v.findViewById(R.id.upload_image_ll);
-        linearLayout.setOnClickListener(new View.OnClickListener() {
+        button = v.findViewById(R.id.open_gallery_button);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chooseFile();
@@ -57,19 +61,14 @@ public class AddNewPhotoFragment extends Fragment {
 
     public void chooseFile(){
         Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+        intent.setAction(Intent.ACTION_PICK);
 
-//        Intent intent = new Intent();
-//        intent.setAction(Intent.ACTION_PICK);
-//
-//        File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-//        String pictureDirectoryPath = pictureDirectory.getPath();
-//        Uri data = Uri.parse(pictureDirectoryPath);
-//        intent.setDataAndType(data, "image/*");
-//
-//        activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+        File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        String pictureDirectoryPath = pictureDirectory.getPath();
+        Uri data = Uri.parse(pictureDirectoryPath);
+        intent.setDataAndType(data, "image/*");
+
+        activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
     }
 
 

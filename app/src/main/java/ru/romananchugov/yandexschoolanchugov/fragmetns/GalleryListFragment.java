@@ -49,7 +49,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     private SwipeRefreshLayout refresher;
     private FloatingActionButton fab;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private GalleryListAdapter adapter;
     private List<GalleryItem> galleryItems;
     private MainActivity activity;
 
@@ -134,11 +134,11 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoaderReset(@NonNull Loader<List<GalleryItem>> loader) {
-
     }
 
     @Override
     public void onRefresh() {
+        adapter.stopLoading();
         getLoaderManager().restartLoader(0, null, this);
         activity.cancelSelectionMode();
         new Handler().postDelayed(new Runnable() {

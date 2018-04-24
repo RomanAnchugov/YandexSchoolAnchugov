@@ -61,10 +61,10 @@ import ru.romananchugov.yandexschoolanchugov.network.RestClientUtil;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
 
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
-    // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
     public static final String USERNAME = "ymra.username";
     public static final String TOKEN = "ymra.token";
     private static final String TAG = "MainActivity";
-    private static final int PADDING = 25;
+    private static final int SELECTION_PADDING = 25;
 
     private UploadingProgressDialog progressFragmentDialog;
 
@@ -151,12 +151,14 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState == null) {
             startFragment();
         }
+
+        Log.i(TAG, "onCreate: token - " + token);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.delete_forever:
+            case R.id.delete_to_trash:
                 DeletePhotosDialog.newInstance(selectedItems, this).show(getSupportFragmentManager(), "delete dialog");
                 break;
         }
@@ -362,7 +364,7 @@ public class MainActivity extends AppCompatActivity
         selectedItems.add(galleryItem);
         updateToolbar();
 
-        imageView.setPadding(PADDING, PADDING, PADDING, PADDING);
+        imageView.setPadding(SELECTION_PADDING, SELECTION_PADDING, SELECTION_PADDING, SELECTION_PADDING);
         imageView.setBackgroundColor(getResources().getColor(R.color.yellow));
     }
 
@@ -374,6 +376,10 @@ public class MainActivity extends AppCompatActivity
 
         imageView.setPadding(1,1,1,1);
         imageView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+
+        if(selectedItems.size() == 0){
+            cancelSelectionMode();
+        }
     }
 
     //обновление информации на тулбаре при выделении
@@ -394,7 +400,7 @@ public class MainActivity extends AppCompatActivity
         selectedItems.clear();
         toolbar.getMenu().clear();
         toolbar.setTitle(getResources().getString(R.string.app_name));
-        toolbar.setBackgroundColor(getResources().getColor(android.R.color.background_light));
+        toolbar.setBackgroundResource(R.drawable.item_bg_card);
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.black));
         isSelectionMode = false;
     }

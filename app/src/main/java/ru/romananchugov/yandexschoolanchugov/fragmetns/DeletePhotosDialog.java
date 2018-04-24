@@ -75,15 +75,15 @@ public class DeletePhotosDialog extends DialogFragment {
     }
 
     public void deleteSelectedPhotos(){
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String token = preferences.getString(TOKEN, null);
-        activity.cancelSelectionMode();
 
         for(final GalleryItem item: selectedItems) {
+            Log.i(TAG, "deleteSelectedPhotos: iteration" );
             Retrofit.Builder builder = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create());
+
             final Retrofit retrofit = builder.build();
             DiskClientApi diskClientApi = retrofit.create(DiskClientApi.class);
             final Call<Link> call = diskClientApi.deletePhoto("OAuth " + token, item.getPath(), "false");
@@ -98,7 +98,9 @@ public class DeletePhotosDialog extends DialogFragment {
                     galleryListFragment.removeItem(item);
 
                     if(selectedItems.size() == 0){
+                        Toast.makeText(activity, R.string.moved_to_trash, Toast.LENGTH_LONG).show();
                         uploadingProgressDialog.dismiss();
+                        activity.cancelSelectionMode();
                     }
                 }
 

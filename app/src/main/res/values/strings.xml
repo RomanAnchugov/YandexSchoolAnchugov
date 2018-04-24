@@ -23,4 +23,6 @@
     <string name="uploading_failure">При загрузке возникли проблемы</string>
     <string name="successful_uploading">Фото успешно загружено</string>
     <string name="uploading_name_conflict">Фото с таким именем уже существует</string>
+    <string name="moved_to_trash">Фотографии успешно перемещены в корзину</string>
+    <string name="open_gallery">Открыть галерею</string>
 </resources>
