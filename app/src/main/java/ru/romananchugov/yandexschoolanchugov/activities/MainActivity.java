@@ -161,6 +161,18 @@ public class MainActivity extends AppCompatActivity
             case R.id.delete_to_trash:
                 DeletePhotosDialog.newInstance(selectedItems, this).show(getSupportFragmentManager(), "delete dialog");
                 break;
+            case R.id.share:
+                ArrayList<Uri> sharedUrl = new ArrayList<>();
+                for(GalleryItem galleryItem:selectedItems){
+                    sharedUrl.add(Uri.parse(galleryItem.getDownloadLink()));
+                }
+
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, sharedUrl);
+                shareIntent.setType("image/*");
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_images_to)));
+                break;
         }
         return false;
     }

@@ -29,4 +29,5 @@
     <string name="add_new_photo">Добавить новое фото</string>
     <string name="uploading">Загрузка</string>
     <string name="error">Ошибка</string>
+    <string name="share_images_to">Отаправить картинки в..</string>
 </resources>

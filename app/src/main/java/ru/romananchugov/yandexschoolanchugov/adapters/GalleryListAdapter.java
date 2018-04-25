@@ -91,10 +91,10 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
                     galleryItems.get(position).setDownloadLink(null);
                 }
             }
-            if(glidesMap.get(position) != null && glidesMap.get(position).isRunning()) {
-                glidesMap.get(position).clear();
-                glidesMap.remove(position);
-            }
+//            if(glidesMap.get(position) != null && glidesMap.get(position).isRunning()) {
+//                glidesMap.get(position).clear();
+//                glidesMap.remove(position);
+//            }
         }
     }
 
