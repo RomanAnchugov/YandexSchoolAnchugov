@@ -29,4 +29,6 @@ public class UploadingProgressDialog extends DialogFragment {
         View v = inflater.inflate(R.layout.uploading_progress_fragment, container, false);
         return v;
     }
+
+
 }
