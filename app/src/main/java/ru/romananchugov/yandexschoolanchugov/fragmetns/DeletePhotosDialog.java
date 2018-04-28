@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.yandex.disk.rest.json.Link;
@@ -23,12 +22,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
-import ru.romananchugov.yandexschoolanchugov.interfaces.DiskClientApi;
+import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 
 import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.GALLERY_FRAGMENT_TAG;
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PROGRESS_DIALOG_TAG;
 
 /**
  * Created by romananchugov on 21.04.2018.
@@ -40,7 +40,7 @@ public class DeletePhotosDialog extends DialogFragment {
 
     private MainActivity activity;
     private List<GalleryItem> selectedItems;
-    private UploadingProgressDialog uploadingProgressDialog;
+    private ProgressDialog progressDialog;
 
     private DeletePhotosDialog(List<GalleryItem> selectedItems, MainActivity activity){
         this.selectedItems = selectedItems;
@@ -61,8 +61,8 @@ public class DeletePhotosDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 deleteSelectedPhotos();
-                uploadingProgressDialog = UploadingProgressDialog.newInstance();
-                uploadingProgressDialog.show(getFragmentManager(), "deleting progress");
+                progressDialog = ProgressDialog.newInstance();
+                progressDialog.show(activity.getSupportFragmentManager(), PROGRESS_DIALOG_TAG);
             }
         });
         builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -79,14 +79,14 @@ public class DeletePhotosDialog extends DialogFragment {
         String token = preferences.getString(TOKEN, null);
 
         for(final GalleryItem item: selectedItems) {
-            Log.i(TAG, "deleteSelectedPhotos: iteration" );
             Retrofit.Builder builder = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create());
 
             final Retrofit retrofit = builder.build();
             DiskClientApi diskClientApi = retrofit.create(DiskClientApi.class);
-            final Call<Link> call = diskClientApi.deletePhoto("OAuth " + token, item.getPath(), "false");
+            final Call<Link> call = diskClientApi
+                    .deletePhoto("OAuth " + token, item.getPath(), "false");
 
             call.enqueue(new Callback<Link>() {
                 @Override
@@ -99,16 +99,15 @@ public class DeletePhotosDialog extends DialogFragment {
 
                     if(selectedItems.size() == 0){
                         Toast.makeText(activity, R.string.moved_to_trash, Toast.LENGTH_LONG).show();
-                        uploadingProgressDialog.dismiss();
+                        progressDialog.dismiss();
                         activity.cancelSelectionMode();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Link> call, Throwable t) {
-                    Log.i(TAG, "onFailure: " + t.getMessage());
                     Toast.makeText(activity, R.string.uploading_failure, Toast.LENGTH_LONG).show();
-                    uploadingProgressDialog.dismiss();
+                    progressDialog.dismiss();
                 }
             });
         }

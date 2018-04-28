@@ -18,7 +18,6 @@ import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -32,7 +31,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
-import ru.romananchugov.yandexschoolanchugov.interfaces.DiskClientApi;
+import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
 import ru.romananchugov.yandexschoolanchugov.models.DownloadLink;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 
@@ -102,7 +101,7 @@ public class SliderAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return view == ((View) object);
+        return view == object;
     }
 
     @Override

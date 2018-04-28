@@ -79,7 +79,7 @@ public class AddNewPhotoFragment extends DialogFragment {
         Uri data = Uri.parse(pictureDirectoryPath);
         intent.setDataAndType(data, "image/*");
 
-        activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+        activity.startActivityForResult(Intent.createChooser(intent, getString(R.string.select_photo)), PICK_IMAGE);
     }
 
     @Override

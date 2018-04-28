@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ya.Gallereya</string>
+    <string name="app_title">Ya.Gallereya</string>
+    <string name="successful_uploading">Photo uploaded successfully</string>
+    <string name="uploading_name_conflict">A photo with this name already exists</string>
+    <string name="moved_to_trash">Photos successfully moved to trash</string>
+    <string name="delete_dialog_title">Delete photos?</string>
+    <string name="logout_dialog_message">The application will be closed</string>
+    <string name="uploading_failure">An error occurred while loading</string>
+    <string name="wait_for_load">Please wait, the image is loading</string>
+    <string name="wait_upload">Please wait</string>
+    <string name="error">Error</string>
+    <string name="share_images_to">Send pictures to ..</string>
+    <string name="open_gallery">View gallery</string>
+    <string name="about_app">About app</string>
+    <string name="no">No</string>
+    <string name="load_soon">Download soon</string>
+    <string name="uploading">Loading</string>
+    <string name="add_new_photo">Add new photo</string>
+    <string name="yes">Yes</string>
+    <string name="logout_dialog_title">Log out of the account?</string>
+    <string name="logout">Sign out of your account</string>
+    <string name="selection_placeholder">Selected %1$s</string>
+    <string name="upload_description">Select a photo from your Gallery</string>
+    <string name="select_photo">Choose a photo ..</string>
+    <string name="delete_dialog_message">All photos will be moved to the trash</string>
+    <string name="open_nav_drawer">Open navigation drawer</string>
+    <string name="close_nav_drawer">Open navigation drawer</string>
+    <string name="delete">Delete</string>
+    <string name="share">share</string>
+    <string name="slider_position">%1$d of %2$d</string>
+</resources>

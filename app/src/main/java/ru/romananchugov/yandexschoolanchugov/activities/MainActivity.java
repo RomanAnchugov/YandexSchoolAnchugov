@@ -1,14 +1,12 @@
 package ru.romananchugov.yandexschoolanchugov.activities;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -32,12 +30,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.yandex.disk.rest.Credentials;
-import com.yandex.disk.rest.RestClient;
-import com.yandex.disk.rest.exceptions.ServerException;
 import com.yandex.disk.rest.json.Link;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -52,18 +47,17 @@ import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.DeletePhotosDialog;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.GalleryListFragment;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.LogoutAcceptDialog;
-import ru.romananchugov.yandexschoolanchugov.fragmetns.UploadingProgressDialog;
-import ru.romananchugov.yandexschoolanchugov.interfaces.DiskClientApi;
+import ru.romananchugov.yandexschoolanchugov.fragmetns.ProgressDialog;
+import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 import ru.romananchugov.yandexschoolanchugov.models.UploaderWrapper;
-import ru.romananchugov.yandexschoolanchugov.network.RestClientUtil;
+import ru.romananchugov.yandexschoolanchugov.network.AsyncUpload;
 
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.DELETE_DIALOG_TAG;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.GALLERY_FRAGMENT_TAG;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.LOGOUT_DIALOG_TAG;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
-import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PROGRESS_DIALOG_TAG;
 
 
 public class MainActivity extends AppCompatActivity
@@ -82,13 +76,16 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private static final int SELECTION_PADDING = 20;
 
-    private UploadingProgressDialog progressFragmentDialog;
+    private ProgressDialog progressFragmentDialog;
 
     private Toolbar toolbar;
+    private MainActivity activity;
 
     private List<ImageView> selectedViews;
     private List<GalleryItem> selectedItems;
     private boolean isSelectionMode;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,14 +96,16 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         verifyStoragePermissions(this);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        activity = this;
 
         selectedViews = new ArrayList<>();
         selectedItems = new ArrayList<>();
         isSelectionMode = false;
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
@@ -135,10 +134,10 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        progressFragmentDialog = UploadingProgressDialog.newInstance();
+        progressFragmentDialog = ProgressDialog.newInstance();
 
         if (getIntent() != null && getIntent().getData() != null) {
             onLogin();
@@ -223,7 +222,7 @@ public class MainActivity extends AppCompatActivity
         switch (item.getItemId()){
             case R.id.gallery_menu_item:
                 if(!isGalleryVisible) {
-                    addFragment(GalleryListFragment.newInstance("Я.Галерея", this), GALLERY_FRAGMENT_TAG);
+                    addFragment(GalleryListFragment.newInstance(this), GALLERY_FRAGMENT_TAG);
                     item.setChecked(true);
                 }
                 break;
@@ -258,7 +257,7 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_container,
-                        GalleryListFragment.newInstance("Я.Галерея", this),
+                        GalleryListFragment.newInstance(this),
                         GALLERY_FRAGMENT_TAG)
                 .commit();
     }
@@ -268,11 +267,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void logout(){
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-        editor.putString(USERNAME, "");
-        editor.putString(TOKEN, null);
-        editor.apply();
-        LogoutAcceptDialog.newInstance().show(getSupportFragmentManager(), LOGOUT_DIALOG_TAG);
+        LogoutAcceptDialog.newInstance(this).show(getSupportFragmentManager(), LOGOUT_DIALOG_TAG);
     }
 
     public void onLogin() {
@@ -285,7 +280,6 @@ public class MainActivity extends AppCompatActivity
         if (matcher.find()) {
             final String token = matcher.group(1);
             if (!TextUtils.isEmpty(token)) {
-                Log.d(TAG, "onLogin: token: " + token);
                 saveToken(token);
             } else {
                 Log.w(TAG, "onRegistrationSuccess: empty token");
@@ -322,9 +316,8 @@ public class MainActivity extends AppCompatActivity
             public void onResponse(Call<Link> call, final Response<Link> response) {
 
                 if(!response.message().equals("conflict")) {
-                    progressFragmentDialog.show(getSupportFragmentManager(), PROGRESS_DIALOG_TAG);
                     UploaderWrapper uploaderWrapper = new UploaderWrapper(response.body(), file, credentials);
-                    new AsyncUpload().execute(uploaderWrapper);
+                    AsyncUpload.newInstance(activity).execute(uploaderWrapper);
                 }else{
                     Log.i(TAG, "onResponse: " + response);
                     Toast.makeText(getBaseContext(), R.string.uploading_name_conflict, Toast.LENGTH_SHORT).show();
@@ -366,12 +359,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void closeNavDrawer(){
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
     }
 
     public void closeKeyboard(){
-        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.fragment_container);
+        FrameLayout frameLayout = findViewById(R.id.fragment_container);
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(frameLayout.getWindowToken(), 0);
@@ -438,47 +431,6 @@ public class MainActivity extends AppCompatActivity
         toolbar.setBackgroundResource(R.drawable.item_bg_card);
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.black));
         isSelectionMode = false;
-    }
-
-    //асинхронная загрузка файла на диск
-    @SuppressLint("StaticFieldLeak")
-    private class AsyncUpload extends AsyncTask<UploaderWrapper, Integer, Boolean>{
-
-        @Override
-        protected Boolean doInBackground(UploaderWrapper... uploaderWrappers) {
-            UploaderWrapper uploaderWrapper = uploaderWrappers[0];
-
-            Credentials credentials = uploaderWrapper.getCredentials();
-            RestClient client = RestClientUtil.getInstance(credentials);
-
-            File file = uploaderWrapper.getFile();
-            Link link = uploaderWrapper.getLink();
-
-            try {
-                client.uploadFile(link, true, file, null);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return true;
-            } catch (ServerException e) {
-                e.printStackTrace();
-                return true;
-            } catch (RuntimeException e){
-                e.printStackTrace();
-                return true;
-            }
-
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean isError) {
-            if(!isError) {
-                Toast.makeText(getApplicationContext(), R.string.successful_uploading, Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(getApplicationContext(), R.string.error, Toast.LENGTH_SHORT).show();
-            }
-            progressFragmentDialog.dismiss();
-        }
     }
 
     //Запрос на запись файлов для api>23

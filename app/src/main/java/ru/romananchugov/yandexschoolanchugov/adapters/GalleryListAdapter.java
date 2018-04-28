@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
-import ru.romananchugov.yandexschoolanchugov.interfaces.DiskClientApi;
+import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
 import ru.romananchugov.yandexschoolanchugov.models.DownloadLink;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 import ru.romananchugov.yandexschoolanchugov.utils.GalleryClickListener;
@@ -46,7 +45,6 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
     private HashMap<Integer, Call<DownloadLink>> callsMap;
     private HashMap<Integer, Request> glidesMap;
     private ImageView imageView;
-    //private Fragment fragment;
     private List<GalleryItem> galleryItems;
     private MainActivity activity;
 
@@ -99,7 +97,6 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         if(holder.getAdapterPosition() >= 0){
             int position = holder.getAdapterPosition();
             if (galleryItems.get(position).getDownloadLink() != null) {
-                //if(glidesMap.containsKey(position) && glidesMap.get(position).isPaused()) glidesMap.get(position).recycle();
                 glideLoading(position, holder);
             } else{
                 galleryItems.get(position).setDownloadLink("");
@@ -139,12 +136,10 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
 
                 @Override
                 public void onFailure(Call<DownloadLink> call, Throwable t) {
-
                 }
             });
         }catch (OutOfMemoryError e){
             e.printStackTrace();
-            Log.i(TAG, "firstLoad: error" );
         }
 
         callsMap.put(position, call);
@@ -164,7 +159,6 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
                     .into(holder.imageView).getRequest();
 
             glidesMap.put(position, request);
-
     }
 
     public void stopLoading(){

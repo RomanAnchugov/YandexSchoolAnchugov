@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.List;
 
 import ru.romananchugov.yandexschoolanchugov.R;
@@ -15,6 +14,7 @@ import ru.romananchugov.yandexschoolanchugov.fragmetns.SliderDialogFragment;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.SLIDER_FRAGMENT_TAG;
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.SLIDER_IMAGES_POSITION_KEY;
 
 /**
  * Created by romananchugov on 10.04.2018.
@@ -36,15 +36,14 @@ public class GalleryClickListener implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         Bundle bundle = new Bundle();
-        bundle.putInt(Keys.SLIDER_IMAGES_POSITION, position);
-        bundle.putSerializable(Keys.SLIDER_IMAGES_ARRAY, (Serializable) galleryItems);
+        bundle.putInt(SLIDER_IMAGES_POSITION_KEY, position);
 
         ImageView imageView = (ImageView) view;
 
         if (!activity.isSelectionMode()) {
             FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            SliderDialogFragment slider = SliderDialogFragment.newInstance();
+            SliderDialogFragment slider = SliderDialogFragment.newInstance(galleryItems);
             slider.setArguments(bundle);
             try {
                 slider.show(ft, SLIDER_FRAGMENT_TAG);

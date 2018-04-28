@@ -1,4 +1,4 @@
-package ru.romananchugov.yandexschoolanchugov.interfaces;
+package ru.romananchugov.yandexschoolanchugov.network;
 
 import com.yandex.disk.rest.json.Link;
 

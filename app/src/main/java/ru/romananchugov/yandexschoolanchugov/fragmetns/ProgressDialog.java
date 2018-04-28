@@ -15,12 +15,12 @@ import ru.romananchugov.yandexschoolanchugov.R;
  * Created by romananchugov on 14.04.2018.
  */
 
-public class UploadingProgressDialog extends DialogFragment {
+public class ProgressDialog extends DialogFragment {
     @SuppressLint("ValidFragment")
-    private UploadingProgressDialog(){}
+    private ProgressDialog(){}
 
-    public static UploadingProgressDialog newInstance(){
-        return new UploadingProgressDialog();
+    public static ProgressDialog newInstance(){
+        return new ProgressDialog();
     }
 
     @Nullable

@@ -13,9 +13,9 @@ import com.yandex.disk.rest.Credentials;
 import com.yandex.disk.rest.OkHttpClientFactory;
 import com.yandex.disk.rest.RestClient;
 
-public class RestClientUtil {
+class RestClientUtil {
 
-    public static RestClient getInstance(final Credentials credentials) {
+    static RestClient getInstance(final Credentials credentials) {
         OkHttpClient client = OkHttpClientFactory.makeClient();
         return new RestClient(credentials, client);
     }

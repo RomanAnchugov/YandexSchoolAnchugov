@@ -21,7 +21,8 @@ import java.util.List;
 import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.adapters.SliderAdapter;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
-import ru.romananchugov.yandexschoolanchugov.utils.Keys;
+
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.SLIDER_IMAGES_POSITION_KEY;
 
 /**
  * Created by romananchugov on 11.04.2018.
@@ -44,12 +45,12 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
 
     private ViewPager viewPager;
 
-    private SliderDialogFragment(){
+    private SliderDialogFragment(List<GalleryItem> galleryItems){
         position = 0;
+        this.galleryItems = galleryItems;
     }
-    public static SliderDialogFragment newInstance(){
-        SliderDialogFragment f = new SliderDialogFragment();
-        return f;
+    public static SliderDialogFragment newInstance(List<GalleryItem> galleryItems){
+        return new SliderDialogFragment(galleryItems);
     }
 
     @Override
@@ -64,8 +65,7 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.slider_fragment, container, false);
 
-        galleryItems = (List<GalleryItem>) getArguments().getSerializable(Keys.SLIDER_IMAGES_ARRAY);
-        position = getArguments().getInt(Keys.SLIDER_IMAGES_POSITION);
+        position = getArguments().getInt(SLIDER_IMAGES_POSITION_KEY);
         imagesCountTextView = v.findViewById(R.id.images_count_text_view);
         imageTitleTextView = v.findViewById(R.id.image_title_text_view);
         imageDateTextView = v.findViewById(R.id.image_date_text_view);
@@ -107,7 +107,7 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
 
 
     public void setCurrentImage(int position){
-        viewPager.setCurrentItem(position, false);
+        viewPager.setCurrentItem(position, true);
         displayImageInfo(this.position);
     }
 

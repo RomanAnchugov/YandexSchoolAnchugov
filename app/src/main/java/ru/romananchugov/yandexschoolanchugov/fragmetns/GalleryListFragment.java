@@ -54,12 +54,12 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     private MainActivity activity;
 
 
-    private GalleryListFragment(String title, MainActivity activity){
+    private GalleryListFragment(MainActivity activity){
         this.activity = activity;
-        this.title = title;
+        this.title = activity.getResources().getString(R.string.app_name);
     }
-    public static GalleryListFragment newInstance(String title, MainActivity activity){
-        GalleryListFragment f = new GalleryListFragment(title,activity);
+    public static GalleryListFragment newInstance(MainActivity activity){
+        GalleryListFragment f = new GalleryListFragment(activity);
         return f;
     }
 
@@ -95,7 +95,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToNewPhotoFragment();
+                goToAddPhotoFragment();
             }
         });
 
@@ -149,12 +149,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         }, 1500);
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-
-    }
-
-    public void goToNewPhotoFragment(){
+    public void goToAddPhotoFragment(){
         activity.cancelSelectionMode();
         AddNewPhotoFragment
                 .newInstance(activity, getString(R.string.add_new_photo))
@@ -172,9 +167,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
             }
         }
 
-        if (galleryItemList != null) {
-            galleryItems.addAll(galleryItemList);
-        }
+        galleryItems.addAll(galleryItemList);
         adapter.notifyDataSetChanged();
     }
 
