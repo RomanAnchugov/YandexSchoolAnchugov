@@ -25,7 +25,9 @@ public class LogoutAcceptDialog extends DialogFragment {
 
     private Context context;
 
-    private LogoutAcceptDialog(Context context){}
+    private LogoutAcceptDialog(Context context){
+        this.context = context;
+    }
 
     public static LogoutAcceptDialog newInstance(Context context){
         return new LogoutAcceptDialog(context);
@@ -37,6 +39,7 @@ public class LogoutAcceptDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle(R.string.logout_dialog_title);
+        builder.setIcon(R.drawable.ic_logout);
         builder.setMessage(R.string.logout_dialog_message);
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override

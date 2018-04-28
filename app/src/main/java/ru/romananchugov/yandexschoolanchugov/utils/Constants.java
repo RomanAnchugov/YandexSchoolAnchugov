@@ -15,4 +15,5 @@ public class Constants {
     public static final String PROGRESS_DIALOG_TAG = "Progress";
     public static final String LOGOUT_DIALOG_TAG = "Logout";
     public static final String DELETE_DIALOG_TAG = "Delete";
+    public static final String ABOUT_FRAGMENT_TAG = "About app";
 }

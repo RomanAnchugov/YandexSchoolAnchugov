@@ -26,22 +26,22 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
  */
 
 @SuppressLint("ValidFragment")
-public class AddNewPhotoFragment extends DialogFragment {
-    private static final String TAG = AddNewPhotoFragment.class.getSimpleName();
+public class AddNewPhotoDialog extends DialogFragment {
+    private static final String TAG = AddNewPhotoDialog.class.getSimpleName();
 
     private MainActivity activity;
     private String title;
     private Button button;
 
 
-    private AddNewPhotoFragment(MainActivity activity, String title){
+    private AddNewPhotoDialog(MainActivity activity, String title){
         this.title = title;
         this.activity = activity;
     }
 
     @NonNull
-    public static AddNewPhotoFragment newInstance(MainActivity activity, String title){
-        return new AddNewPhotoFragment(activity, title);
+    public static AddNewPhotoDialog newInstance(MainActivity activity, String title){
+        return new AddNewPhotoDialog(activity, title);
     }
 
     @Override

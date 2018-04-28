@@ -44,15 +44,16 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
+import ru.romananchugov.yandexschoolanchugov.fragmetns.AboutAppFragment;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.DeletePhotosDialog;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.GalleryListFragment;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.LogoutAcceptDialog;
-import ru.romananchugov.yandexschoolanchugov.fragmetns.ProgressDialog;
-import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 import ru.romananchugov.yandexschoolanchugov.models.UploaderWrapper;
 import ru.romananchugov.yandexschoolanchugov.network.AsyncUpload;
+import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
 
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.ABOUT_FRAGMENT_TAG;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.DELETE_DIALOG_TAG;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.GALLERY_FRAGMENT_TAG;
@@ -73,10 +74,8 @@ public class MainActivity extends AppCompatActivity
     public static final String AUTH_URL = "https://oauth.yandex.ru/authorize?response_type=token&client_id=" + CLIENT_ID;
     public static final String USERNAME = "ymra.username";
     public static final String TOKEN = "ymra.token";
-    private static final String TAG = "MainActivity";
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static final int SELECTION_PADDING = 20;
-
-    private ProgressDialog progressFragmentDialog;
 
     private Toolbar toolbar;
     private MainActivity activity;
@@ -84,8 +83,6 @@ public class MainActivity extends AppCompatActivity
     private List<ImageView> selectedViews;
     private List<GalleryItem> selectedItems;
     private boolean isSelectionMode;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +107,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
                 closeKeyboard();
-                cancelSelectionMode();
+                if(isSelectionMode) {
+                    cancelSelectionMode();
+                }
             }
 
             @Override
@@ -137,8 +136,6 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        progressFragmentDialog = ProgressDialog.newInstance();
-
         if (getIntent() != null && getIntent().getData() != null) {
             onLogin();
         }
@@ -153,7 +150,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (savedInstanceState == null) {
-            startFragment();
+            addFragment(GalleryListFragment.newInstance(this), GALLERY_FRAGMENT_TAG);
         }
 
         Log.i(TAG, "onCreate: token - " + token);
@@ -217,17 +214,19 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        boolean isGalleryVisible = getSupportFragmentManager().findFragmentByTag(GALLERY_FRAGMENT_TAG).isVisible();
+        GalleryListFragment galleryListFragment = (GalleryListFragment) getSupportFragmentManager().findFragmentByTag(GALLERY_FRAGMENT_TAG);
 
         switch (item.getItemId()){
             case R.id.gallery_menu_item:
-                if(!isGalleryVisible) {
+                if(galleryListFragment == null) {
                     addFragment(GalleryListFragment.newInstance(this), GALLERY_FRAGMENT_TAG);
                     item.setChecked(true);
                 }
                 break;
             case R.id.about_menu_item:
+                addFragment(AboutAppFragment.newInstance(), ABOUT_FRAGMENT_TAG);
                 item.setChecked(true);
+                toolbar.setTitle(R.string.about_app);
                 break;
             case R.id.logout_menu_item:
                 logout();
@@ -253,15 +252,6 @@ public class MainActivity extends AppCompatActivity
         return isSelectionMode;
     }
 
-    private void startFragment() {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.fragment_container,
-                        GalleryListFragment.newInstance(this),
-                        GALLERY_FRAGMENT_TAG)
-                .commit();
-    }
-
     public void startLogin() {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(AUTH_URL)));
     }
@@ -270,6 +260,7 @@ public class MainActivity extends AppCompatActivity
         LogoutAcceptDialog.newInstance(this).show(getSupportFragmentManager(), LOGOUT_DIALOG_TAG);
     }
 
+    //логин после возврата из браузера
     public void onLogin() {
         Uri data = getIntent().getData();
         setIntent(null);
@@ -354,6 +345,7 @@ public class MainActivity extends AppCompatActivity
 
     public void addFragment(Fragment fragment, String tag){
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft = ft.replace(R.id.fragment_container, fragment, tag);
         ft.commit();
     }

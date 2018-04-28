@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@drawable/item_bg_card"
-        app:popupTheme="@style/AppTheme.PopupOverlay" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"

@@ -56,6 +56,7 @@ public class DeletePhotosDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle(R.string.delete_dialog_title);
+        builder.setIcon(R.drawable.ic_trash_delete);
         builder.setMessage(R.string.delete_dialog_message);
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override

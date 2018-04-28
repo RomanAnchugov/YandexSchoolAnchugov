@@ -99,8 +99,8 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
             }
         });
 
-
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
+        recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener( new RecyclerView.OnScrollListener(){
             @Override
@@ -151,7 +151,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
 
     public void goToAddPhotoFragment(){
         activity.cancelSelectionMode();
-        AddNewPhotoFragment
+        AddNewPhotoDialog
                 .newInstance(activity, getString(R.string.add_new_photo))
                 .show(activity.getSupportFragmentManager(), ADD_PHOTO_DIALOG_TAG);
     }

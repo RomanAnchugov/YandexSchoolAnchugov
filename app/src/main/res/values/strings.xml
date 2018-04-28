@@ -29,4 +29,6 @@
     <string name="wait_for_load">Подождите, картинка загружается</string>
     <string name="load_soon">Загрузка скоро начнётся</string>
     <string name="select_photo">Выберете фотографию..</string>
+    <string name="about_description">Тестовое задание в школу мобильной разработки Яндекса</string>
+    <string name="me">Roman Anchugov</string>
 </resources>
