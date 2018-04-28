@@ -33,7 +33,6 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_back_white"
                 android:background="@android:color/transparent"
-                android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="20dp"/>
@@ -46,6 +45,17 @@
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
                 android:layout_centerInParent="true"/>
+
+            <ImageButton
+                android:id="@+id/slide_share_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_share"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:background="@android:color/transparent"
+                android:layout_marginEnd="10dp"
+                />
         </RelativeLayout>
 
         <LinearLayout

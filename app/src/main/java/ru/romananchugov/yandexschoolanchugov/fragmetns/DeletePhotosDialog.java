@@ -26,9 +26,9 @@ import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
 import ru.romananchugov.yandexschoolanchugov.interfaces.DiskClientApi;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 
-import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.GALLERY_FRAGMENT_TAG;
 import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.GALLERY_FRAGMENT_TAG;
 
 /**
  * Created by romananchugov on 21.04.2018.

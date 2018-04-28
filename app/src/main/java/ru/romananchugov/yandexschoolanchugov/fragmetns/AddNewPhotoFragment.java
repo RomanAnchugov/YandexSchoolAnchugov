@@ -44,13 +44,21 @@ public class AddNewPhotoFragment extends DialogFragment {
         return new AddNewPhotoFragment(activity, title);
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.add_new_photo_fragment, container, false);
         if(activity.getSupportActionBar() != null) {
             activity.getSupportActionBar().setTitle(title);
         }
+        getDialog().setTitle(title);
         button = v.findViewById(R.id.open_gallery_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override

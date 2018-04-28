@@ -4,13 +4,17 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.List;
 
+import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
 import ru.romananchugov.yandexschoolanchugov.fragmetns.SliderDialogFragment;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
+
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.SLIDER_FRAGMENT_TAG;
 
 /**
  * Created by romananchugov on 10.04.2018.
@@ -18,7 +22,7 @@ import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 
 public class GalleryClickListener implements View.OnClickListener {
 
-    private static final String TAG = "GalleryClickListener";
+    private static final String TAG = GalleryClickListener.class.getSimpleName();
     private final List<GalleryItem> galleryItems;
     private int position;
     private MainActivity activity;
@@ -42,7 +46,13 @@ public class GalleryClickListener implements View.OnClickListener {
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             SliderDialogFragment slider = SliderDialogFragment.newInstance();
             slider.setArguments(bundle);
-            slider.show(ft, "slider");
+            try {
+                slider.show(ft, SLIDER_FRAGMENT_TAG);
+            }catch (IllegalStateException e){
+                Toast.makeText(activity.getApplicationContext(), R.string.error, Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+
         } else{
             toggleSelection(imageView);
         }
@@ -55,4 +65,7 @@ public class GalleryClickListener implements View.OnClickListener {
             activity.addViewInSelected(imageView, galleryItems.get(position));
         }
     }
+
+
+
 }

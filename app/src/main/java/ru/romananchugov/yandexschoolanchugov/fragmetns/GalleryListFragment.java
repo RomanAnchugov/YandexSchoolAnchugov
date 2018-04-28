@@ -30,6 +30,7 @@ import ru.romananchugov.yandexschoolanchugov.network.Credentials;
 import ru.romananchugov.yandexschoolanchugov.network.GalleryLoader;
 
 import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.ADD_PHOTO_DIALOG_TAG;
 
 /**
  * Created by romananchugov on 07.04.2018.
@@ -148,14 +149,16 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         }, 1500);
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+
+    }
+
     public void goToNewPhotoFragment(){
         activity.cancelSelectionMode();
-//        FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
-//        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-//        AddNewPhotoFragment addNewPhotoFragment = AddNewPhotoFragment.newInstance(activity, "Добавить новое фото");
-//        ft.replace(R.id.fragment_container, addNewPhotoFragment).addToBackStack(null);
-//        ft.commit();
-        AddNewPhotoFragment.newInstance(activity, getString(R.string.add_new_photo)).show(getFragmentManager(), "dialog");
+        AddNewPhotoFragment
+                .newInstance(activity, getString(R.string.add_new_photo))
+                .show(activity.getSupportFragmentManager(), ADD_PHOTO_DIALOG_TAG);
     }
 
     public void setData(List<GalleryItem> galleryItemList) {

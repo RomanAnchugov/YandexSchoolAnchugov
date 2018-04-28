@@ -29,5 +29,8 @@
     <string name="add_new_photo">Добавить новое фото</string>
     <string name="uploading">Загрузка</string>
     <string name="error">Ошибка</string>
-    <string name="share_images_to">Отаправить картинки в..</string>
+    <string name="share_images_to">Отправить картинки в..</string>
+    <string name="wait_upload">Подождите</string>
+    <string name="wait_for_load">Подождите, картинка загружается</string>
+    <string name="load_soon">Загрузка скоро начнётся</string>
 </resources>

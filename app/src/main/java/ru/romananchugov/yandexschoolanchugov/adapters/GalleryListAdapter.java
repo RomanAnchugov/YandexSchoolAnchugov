@@ -91,10 +91,6 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
                     galleryItems.get(position).setDownloadLink(null);
                 }
             }
-//            if(glidesMap.get(position) != null && glidesMap.get(position).isRunning()) {
-//                glidesMap.get(position).clear();
-//                glidesMap.remove(position);
-//            }
         }
     }
 
@@ -155,18 +151,20 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
     }
 
     public void glideLoading(int position, GalleryListAdapter.ViewHolder holder) {
-        Request request = Glide
-                .with(activity)
-                .load(galleryItems.get(position).getDownloadLink())
-                .apply(new RequestOptions()
-                        .error(R.drawable.ic_refresh_black_24dp)
-                        .placeholder(R.drawable.image_placeholder)
-                        .priority(Priority.NORMAL)
-                        .timeout(60000)
-                        )
-                .into(holder.imageView).getRequest();
 
-        glidesMap.put(position, request);
+            Request request = Glide
+                    .with(activity.getApplicationContext())
+                    .load(galleryItems.get(position).getDownloadLink())
+                    .apply(new RequestOptions()
+                            .error(R.drawable.ic_refresh_black_24dp)
+                            .placeholder(R.drawable.image_placeholder)
+                            .priority(Priority.NORMAL)
+                            .timeout(60000)
+                    )
+                    .into(holder.imageView).getRequest();
+
+            glidesMap.put(position, request);
+
     }
 
     public void stopLoading(){

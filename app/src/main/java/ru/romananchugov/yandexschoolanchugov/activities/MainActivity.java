@@ -59,7 +59,11 @@ import ru.romananchugov.yandexschoolanchugov.models.UploaderWrapper;
 import ru.romananchugov.yandexschoolanchugov.network.RestClientUtil;
 
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.DELETE_DIALOG_TAG;
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.GALLERY_FRAGMENT_TAG;
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.LOGOUT_DIALOG_TAG;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PROGRESS_DIALOG_TAG;
 
 
 public class MainActivity extends AppCompatActivity
@@ -71,13 +75,12 @@ public class MainActivity extends AppCompatActivity
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
-    public static final String GALLERY_FRAGMENT_TAG = "Gallery";
     public static final String CLIENT_ID = "959666c7ee9942f6b9ffec283205e35c";
     public static final String AUTH_URL = "https://oauth.yandex.ru/authorize?response_type=token&client_id=" + CLIENT_ID;
     public static final String USERNAME = "ymra.username";
     public static final String TOKEN = "ymra.token";
     private static final String TAG = "MainActivity";
-    private static final int SELECTION_PADDING = 25;
+    private static final int SELECTION_PADDING = 20;
 
     private UploadingProgressDialog progressFragmentDialog;
 
@@ -90,7 +93,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         verifyStoragePermissions(this);
 
@@ -156,15 +161,26 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        if(isSelectionMode){
+            cancelSelectionMode();
+        }
+        super.onResume();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.delete_to_trash:
-                DeletePhotosDialog.newInstance(selectedItems, this).show(getSupportFragmentManager(), "delete dialog");
+                DeletePhotosDialog
+                        .newInstance(selectedItems, this).show(getSupportFragmentManager(), DELETE_DIALOG_TAG);
                 break;
             case R.id.share:
                 ArrayList<Uri> sharedUrl = new ArrayList<>();
                 for(GalleryItem galleryItem:selectedItems){
-                    sharedUrl.add(Uri.parse(galleryItem.getDownloadLink()));
+                    if(galleryItem.getDownloadLink() != null) {
+                        sharedUrl.add(Uri.parse(galleryItem.getDownloadLink()));
+                    }
                 }
 
                 Intent shareIntent = new Intent();
@@ -239,8 +255,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void startFragment() {
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, GalleryListFragment.newInstance("Я.Галерея", this), GALLERY_FRAGMENT_TAG)
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container,
+                        GalleryListFragment.newInstance("Я.Галерея", this),
+                        GALLERY_FRAGMENT_TAG)
                 .commit();
     }
 
@@ -253,7 +272,7 @@ public class MainActivity extends AppCompatActivity
         editor.putString(USERNAME, "");
         editor.putString(TOKEN, null);
         editor.apply();
-        LogoutAcceptDialog.newInstance().show(getSupportFragmentManager(), "dialog");
+        LogoutAcceptDialog.newInstance().show(getSupportFragmentManager(), LOGOUT_DIALOG_TAG);
     }
 
     public void onLogin() {
@@ -285,6 +304,8 @@ public class MainActivity extends AppCompatActivity
 
     //получаем ссылку для загрузки файла на диск
     public void getUploadLink(final Credentials credentials, final File file){
+        Toast.makeText(getApplicationContext(), R.string.load_soon, Toast.LENGTH_SHORT).show();
+
         final String token = credentials.getToken();
 
         Retrofit.Builder builder = new Retrofit.Builder()
@@ -301,7 +322,7 @@ public class MainActivity extends AppCompatActivity
             public void onResponse(Call<Link> call, final Response<Link> response) {
 
                 if(!response.message().equals("conflict")) {
-                    progressFragmentDialog.show(getSupportFragmentManager(), "progress");
+                    progressFragmentDialog.show(getSupportFragmentManager(), PROGRESS_DIALOG_TAG);
                     UploaderWrapper uploaderWrapper = new UploaderWrapper(response.body(), file, credentials);
                     new AsyncUpload().execute(uploaderWrapper);
                 }else{
@@ -352,7 +373,9 @@ public class MainActivity extends AppCompatActivity
     public void closeKeyboard(){
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.fragment_container);
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(frameLayout.getWindowToken(), 0);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(frameLayout.getWindowToken(), 0);
+        }
     }
 
     //установка значения состояния выделения

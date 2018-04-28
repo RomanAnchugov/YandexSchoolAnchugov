@@ -27,6 +27,8 @@ public class UploadingProgressDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.uploading_progress_fragment, container, false);
+        getDialog().setTitle(R.string.wait_upload);
+        setCancelable(false);
         return v;
     }
 
