@@ -8,6 +8,10 @@
             android:id="@+id/gallery_menu_item"
             android:title="@string/app_title"
             android:icon="@drawable/ic_gallery"/>
+        <item android:id="@+id/storage_info_menu_item"
+            android:title="@string/storage_info"
+            android:icon="@drawable/ic_storage_info"
+            />
         <item
             android:id="@+id/about_menu_item"
             android:title="@string/about_app"

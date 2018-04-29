@@ -144,6 +144,7 @@ public class SliderAdapter extends PagerAdapter {
             public void onResponse(Call<DownloadLink> call, Response<DownloadLink> response) {
                 item.setDownloadLink(response.body().getHref());
                 glideLoading(item, imageView, position);
+                call.cancel();
             }
 
             @Override

@@ -10,7 +10,7 @@ import java.util.List;
 
 import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
-import ru.romananchugov.yandexschoolanchugov.fragmetns.SliderDialogFragment;
+import ru.romananchugov.yandexschoolanchugov.fragments.SliderDialogFragment;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.SLIDER_FRAGMENT_TAG;

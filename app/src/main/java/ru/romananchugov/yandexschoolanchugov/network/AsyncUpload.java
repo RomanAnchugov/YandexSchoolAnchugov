@@ -17,7 +17,7 @@ import java.io.IOException;
 
 import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
-import ru.romananchugov.yandexschoolanchugov.fragmetns.ProgressDialog;
+import ru.romananchugov.yandexschoolanchugov.fragments.ProgressDialog;
 import ru.romananchugov.yandexschoolanchugov.models.UploaderWrapper;
 
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PROGRESS_DIALOG_TAG;
@@ -52,6 +52,7 @@ public class AsyncUpload extends AsyncTask<UploaderWrapper, Integer, Boolean> {
 
         File file = uploaderWrapper.getFile();
         Link link = uploaderWrapper.getLink();
+
 
         try {
             client.uploadFile(link, true, file, null);

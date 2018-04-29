@@ -1,4 +1,4 @@
-package ru.romananchugov.yandexschoolanchugov.fragmetns;
+package ru.romananchugov.yandexschoolanchugov.fragments;
 
 
 import android.annotation.SuppressLint;
@@ -172,6 +172,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     }
 
     public void removeItem(GalleryItem item){
+
         galleryItems.remove(item);
         adapter.notifyDataSetChanged();
     }

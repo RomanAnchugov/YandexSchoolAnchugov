@@ -44,10 +44,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
-import ru.romananchugov.yandexschoolanchugov.fragmetns.AboutAppFragment;
-import ru.romananchugov.yandexschoolanchugov.fragmetns.DeletePhotosDialog;
-import ru.romananchugov.yandexschoolanchugov.fragmetns.GalleryListFragment;
-import ru.romananchugov.yandexschoolanchugov.fragmetns.LogoutAcceptDialog;
+import ru.romananchugov.yandexschoolanchugov.fragments.AboutAppFragment;
+import ru.romananchugov.yandexschoolanchugov.fragments.DeletePhotosDialog;
+import ru.romananchugov.yandexschoolanchugov.fragments.GalleryListFragment;
+import ru.romananchugov.yandexschoolanchugov.fragments.LogoutAcceptDialog;
+import ru.romananchugov.yandexschoolanchugov.fragments.StorageInfoFragment;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 import ru.romananchugov.yandexschoolanchugov.models.UploaderWrapper;
 import ru.romananchugov.yandexschoolanchugov.network.AsyncUpload;
@@ -59,6 +60,7 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.DELETE_DIALO
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.GALLERY_FRAGMENT_TAG;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.LOGOUT_DIALOG_TAG;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.STORAGE_INFO_FRAGMENT_TAG;
 
 
 public class MainActivity extends AppCompatActivity
@@ -204,7 +206,7 @@ public class MainActivity extends AppCompatActivity
                         Credentials credentials = new Credentials(username, token);
                         getUploadLink(credentials, file);
                     }else{
-                        Toast.makeText(this, "You should choose image from gallery", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, R.string.pick_image_from_gallery, Toast.LENGTH_LONG).show();
                     }
                 }
                 break;
@@ -222,6 +224,12 @@ public class MainActivity extends AppCompatActivity
                     addFragment(GalleryListFragment.newInstance(this), GALLERY_FRAGMENT_TAG);
                     item.setChecked(true);
                 }
+                toolbar.setTitle(R.string.app_name);
+                break;
+            case R.id.storage_info_menu_item:
+                addFragment(StorageInfoFragment.newInstance(this), STORAGE_INFO_FRAGMENT_TAG);
+                toolbar.setTitle(R.string.storage_info);
+                item.setChecked(true);
                 break;
             case R.id.about_menu_item:
                 addFragment(AboutAppFragment.newInstance(), ABOUT_FRAGMENT_TAG);
@@ -306,19 +314,21 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(Call<Link> call, final Response<Link> response) {
 
-                if(!response.message().equals("conflict")) {
+                Log.i(TAG, "onResponse: " + response);
+
+                if(!response.message().equals("CONFLICT")) {
                     UploaderWrapper uploaderWrapper = new UploaderWrapper(response.body(), file, credentials);
                     AsyncUpload.newInstance(activity).execute(uploaderWrapper);
                 }else{
                     Log.i(TAG, "onResponse: " + response);
-                    Toast.makeText(getBaseContext(), R.string.uploading_name_conflict, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.uploading_name_conflict, Toast.LENGTH_SHORT).show();
                 }
 
             }
 
             @Override
             public void onFailure(Call<Link> call, Throwable t) {
-
+                Toast.makeText(getApplicationContext(), R.string.error, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -407,7 +417,7 @@ public class MainActivity extends AppCompatActivity
         toolbar.setTitle(
                 getResources()
                         .getString(R.string.selection_placeholder,
-                                String.valueOf(getSelectedViews().size())));
+                                String.valueOf(selectedItems.size())));
     }
 
     //отключение состояния выделения

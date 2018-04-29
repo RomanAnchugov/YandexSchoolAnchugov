@@ -131,6 +131,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
                     if(response.body() != null) {
                         item.setDownloadLink(response.body().getHref());
                         glideLoading(position, holder);
+                        call.cancel();
                     }
                 }
 

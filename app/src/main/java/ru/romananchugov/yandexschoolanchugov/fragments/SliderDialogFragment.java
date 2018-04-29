@@ -1,4 +1,4 @@
-package ru.romananchugov.yandexschoolanchugov.fragmetns;
+package ru.romananchugov.yandexschoolanchugov.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -15,6 +15,8 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.xgc1986.parallaxPagerTransformer.ParallaxPagerTransformer;
 
 import java.util.List;
 
@@ -76,6 +78,9 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
         shareButton.setOnClickListener(this);
 
         viewPager = v.findViewById(R.id.slider_view_pager);
+        ParallaxPagerTransformer transformer = new ParallaxPagerTransformer(R.id.slider_item_image_view);
+        transformer.setSpeed(.6f);
+        viewPager.setPageTransformer(false, transformer);
         viewPager.setAdapter(new SliderAdapter(getActivity(), galleryItems, infoContainer));
         viewPager.addOnPageChangeListener(viewPagerChangeListener);
 

@@ -1,4 +1,4 @@
-package ru.romananchugov.yandexschoolanchugov.fragmetns;
+package ru.romananchugov.yandexschoolanchugov.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
