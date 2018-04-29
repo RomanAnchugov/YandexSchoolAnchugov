@@ -28,6 +28,7 @@ import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
 import ru.romananchugov.yandexschoolanchugov.models.TrashResponse;
 import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
+import ru.romananchugov.yandexschoolanchugov.utils.ArcProgressAnimation;
 
 import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
@@ -39,7 +40,7 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PROGRESS_DIA
  */
 
 @SuppressLint("ValidFragment")
-public class StorageInfoFragment extends Fragment implements View.OnClickListener{
+public class StorageInfoFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = StorageInfoFragment.class.getSimpleName();
 
@@ -90,7 +91,7 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.clear_trash_button:
                 ClearTrashAcceptDialog.newInstance(activity)
                         .show(activity.getSupportFragmentManager(), CLEAR_TRASH_DIALOG_TAG);
@@ -112,15 +113,26 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
         call.enqueue(new Callback<DiskInfo>() {
             @Override
             public void onResponse(Call<DiskInfo> call, Response<DiskInfo> response) {
-                if (response.body() != null){
-                    double overallPercent = (double)response.body().getUsedSpace() / response.body().getTotalSpace();
-                    double trashPercent = (double)response.body().getTrashSize() / response.body().getTotalSpace();
+                if (response.body() != null) {
+                    double overallPercent = (double) response.body().getUsedSpace() / response.body().getTotalSpace();
+                    double trashPercent = (double) response.body().getTrashSize() / response.body().getTotalSpace();
 
-                    storageInfoPg.setProgress((int)(overallPercent * 100));
-                    trashInfoPg.setProgress((int)(trashPercent * 100));
-                    if(response.body().getTrashSize() == 0){
+                    //создаём анимации, устанавливаем значение
+                    ArcProgressAnimation overallAnimation = new ArcProgressAnimation(storageInfoPg, overallPercent * 100);
+                    overallAnimation.setDuration(1000);
+                    storageInfoPg.startAnimation(overallAnimation);
+                    storageInfoPg.setProgress((int) (overallPercent * 100));
+
+                    ArcProgressAnimation trashAnimation = new ArcProgressAnimation(trashInfoPg, trashPercent * 100);
+                    overallAnimation.setDuration(1000);
+                    trashInfoPg.startAnimation(trashAnimation);
+                    trashInfoPg.setProgress((int) (trashPercent * 100));
+
+                    //если корзина пуст
+                    if (response.body().getTrashSize() == 0) {
                         disableFunctions();
                     }
+
                     progressDialog.dismiss();
                     call.cancel();
                 }
@@ -135,7 +147,7 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
     }
 
     //загружает список ресурсов в корзине и вызывает восстановление для фотографий
-    private void restoreTrash(){
+    private void restoreTrash() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String token = preferences.getString(TOKEN, null);
 
@@ -152,23 +164,25 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
             @Override
             public void onResponse(Call<TrashResponse> call, Response<TrashResponse> response) {
                 boolean restoringFlag = false;
-                if(response.body().getResourceList() != null) {
-                    for (Resource resource : response.body().getResourceList().getItems()) {
-                        if(resource.getMimeType().equals("image/jpeg")
-                                || resource.getMimeType().equals("image/png")
-                                || resource.getMimeType().equals("image/bmp")){
-                            restore(resource.getPath().getPath());
-                            restoringFlag = true;
-                        }
+
+                //находим в корзине все картинки и восстанавливаем их
+                for (Resource resource : response.body().getResourceList().getItems()) {
+                    if (resource.getMimeType().equals("image/jpeg")
+                            || resource.getMimeType().equals("image/png")
+                            || resource.getMimeType().equals("image/bmp")) {
+                        restore(resource.getPath().getPath());
+                        restoringFlag = true;
                     }
                 }
 
-                if(!restoringFlag){
+                //проверка на наличие фотографий в корзине
+                if (!restoringFlag) {
                     Toast.makeText(activity, R.string.trash_is_empty, Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     Toast.makeText(activity, R.string.successful_restored_trash, Toast.LENGTH_SHORT).show();
                     disableFunctions();
                 }
+
                 call.cancel();
             }
 
@@ -181,7 +195,7 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
     }
 
     //восстанавливает фотографию из корзины
-    public void restore(String path){
+    public void restore(String path) {
         final Retrofit retrofit = activity.getRetrofit();
 
         DiskClientApi clientApi = retrofit.create(DiskClientApi.class);
@@ -202,7 +216,7 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
     }
 
     //отключение функциональных кнопок
-    public void disableFunctions(){
+    public void disableFunctions() {
         clearTrashButton.setEnabled(false);
         restoreTrashButton.setEnabled(false);
         clearTrashButton.setBackgroundColor(getResources().getColor(R.color.light_gray));
