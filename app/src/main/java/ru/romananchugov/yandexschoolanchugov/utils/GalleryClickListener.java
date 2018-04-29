@@ -43,7 +43,7 @@ public class GalleryClickListener implements View.OnClickListener {
         if (!activity.isSelectionMode()) {
             FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            SliderDialogFragment slider = SliderDialogFragment.newInstance(galleryItems);
+            SliderDialogFragment slider = SliderDialogFragment.newInstance(galleryItems, activity);
             slider.setArguments(bundle);
             try {
                 slider.show(ft, SLIDER_FRAGMENT_TAG);

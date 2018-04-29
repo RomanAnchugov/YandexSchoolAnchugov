@@ -70,6 +70,7 @@ public class AddNewPhotoDialog extends DialogFragment {
         return v;
     }
 
+    //открываем галерею для выбора картинки
     public void chooseFile(){
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_PICK);

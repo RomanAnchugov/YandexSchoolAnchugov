@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.widget.Toast;
@@ -17,13 +15,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
 import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
-
-import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
-import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
 
 /**
  * Created by romananchugov on 29.04.2018.
@@ -48,9 +42,9 @@ public class ClearTrashAcceptDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setTitle("Внимание");
+        builder.setTitle(R.string.attention);
         builder.setIcon(R.drawable.ic_forever_delete);
-        builder.setMessage("Все файлы будут безвозвратно удалены");
+        builder.setMessage(R.string.forever_dialog_description);
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -68,18 +62,11 @@ public class ClearTrashAcceptDialog extends DialogFragment {
 
     //очищает корзину при положительном ответе в диалоге
     private void clearTrash(){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String token = preferences.getString(TOKEN, null);
 
-
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create());
-
-        final Retrofit retrofit = builder.build();
+        final Retrofit retrofit = activity.getRetrofit();
 
         DiskClientApi clientApi = retrofit.create(DiskClientApi.class);
-        final Call<Link> call = clientApi.clearTrash("OAuth " + token);
+        final Call<Link> call = clientApi.clearTrash("OAuth " + activity.getToken());
 
         call.enqueue(new Callback<Link>() {
             @Override
@@ -91,6 +78,7 @@ public class ClearTrashAcceptDialog extends DialogFragment {
             @Override
             public void onFailure(Call<Link> call, Throwable t) {
                 Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT).show();
+                call.cancel();
             }
         });
     }

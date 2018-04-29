@@ -1,8 +1,6 @@
 package ru.romananchugov.yandexschoolanchugov.adapters;
 
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,7 +10,6 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
-import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.HashMap;
@@ -23,17 +20,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
-import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
 import ru.romananchugov.yandexschoolanchugov.models.DownloadLink;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
+import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
 import ru.romananchugov.yandexschoolanchugov.utils.GalleryClickListener;
 import ru.romananchugov.yandexschoolanchugov.utils.GalleryLongClickListener;
-
-import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
-import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
 
 /**
  * Created by romananchugov on 11.04.2018.
@@ -43,7 +36,6 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
     public static final String TAG = GalleryListAdapter.class.getSimpleName();
 
     private HashMap<Integer, Call<DownloadLink>> callsMap;
-    private HashMap<Integer, Request> glidesMap;
     private ImageView imageView;
     private List<GalleryItem> galleryItems;
     private MainActivity activity;
@@ -52,7 +44,6 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         this.activity = activity;
         this.galleryItems = galleryItems;
         callsMap = new HashMap<>();
-        glidesMap = new HashMap<>();
     }
 
     @Override
@@ -111,18 +102,9 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
     }
 
     public void firstLoad(final GalleryItem item, final int position, final GalleryListAdapter.ViewHolder holder) {
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
-        String token = preferences.getString(TOKEN, null);
-
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create());
-
-        final Retrofit retrofit = builder.build();
-
+        final Retrofit retrofit = activity.getRetrofit();
         DiskClientApi clientApi = retrofit.create(DiskClientApi.class);
-        final Call<DownloadLink> call = clientApi.getDownloadFileLink("OAuth " + token, item.getPath());
+        final Call<DownloadLink> call = clientApi.getDownloadFileLink("OAuth " + activity.getToken(), item.getPath());
 
         try {
             call.enqueue(new Callback<DownloadLink>() {
@@ -137,6 +119,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
 
                 @Override
                 public void onFailure(Call<DownloadLink> call, Throwable t) {
+                    call.cancel();
                 }
             });
         }catch (OutOfMemoryError e){
@@ -147,8 +130,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
     }
 
     public void glideLoading(int position, GalleryListAdapter.ViewHolder holder) {
-
-            Request request = Glide
+                Glide
                     .with(activity.getApplicationContext())
                     .load(galleryItems.get(position).getDownloadLink())
                     .apply(new RequestOptions()
@@ -158,20 +140,12 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
                             .timeout(60000)
                     )
                     .into(holder.imageView).getRequest();
-
-            glidesMap.put(position, request);
     }
 
     public void stopLoading(){
-        for(Map.Entry<Integer, Request> entry: glidesMap.entrySet()){
-            if(entry.getValue().isRunning()){
-                entry.getValue().clear();
-            }
-        }
         for(Map.Entry<Integer, Call<DownloadLink>> entry: callsMap.entrySet()){
             entry.getValue().cancel();
         }
-        glidesMap.clear();
         callsMap.clear();
     }
 

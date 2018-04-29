@@ -1,9 +1,6 @@
 package ru.romananchugov.yandexschoolanchugov.adapters;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
@@ -29,14 +26,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
-import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
+import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
 import ru.romananchugov.yandexschoolanchugov.models.DownloadLink;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
-
-import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
-import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
+import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
 
 /**
  * Created by romananchugov on 11.04.2018.
@@ -48,13 +42,13 @@ public class SliderAdapter extends PagerAdapter {
 
     private List<GalleryItem> galleryItems;
     private RelativeLayout infoContainer;
-    private Activity activity;
+    private MainActivity activity;
     private boolean infoVisible;
     private Animation fadeIn;
     private Animation fadeOut;
 
 
-    public SliderAdapter(Activity activity, List<GalleryItem> galleryItems, RelativeLayout infoContainer){
+    public SliderAdapter(MainActivity activity, List<GalleryItem> galleryItems, RelativeLayout infoContainer){
         this.galleryItems = new ArrayList<>(galleryItems);
         this.infoContainer = infoContainer;
         this.activity = activity;
@@ -125,19 +119,10 @@ public class SliderAdapter extends PagerAdapter {
     }
 
     private void firstLoad(final GalleryItem item, final int position, final ImageView imageView) {
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
-        String token = preferences.getString(TOKEN, null);
-
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create());
-
-        final Retrofit retrofit = builder.build();
+        final Retrofit retrofit = activity.getRetrofit();
 
         DiskClientApi clientApi = retrofit.create(DiskClientApi.class);
-        final Call<DownloadLink> call = clientApi.getDownloadFileLink("OAuth " + token, item.getPath());
-
+        final Call<DownloadLink> call = clientApi.getDownloadFileLink("OAuth " + activity.getToken(), item.getPath());
 
         call.enqueue(new Callback<DownloadLink>() {
             @Override
@@ -149,7 +134,7 @@ public class SliderAdapter extends PagerAdapter {
 
             @Override
             public void onFailure(Call<DownloadLink> call, Throwable t) {
-
+                call.cancel();
             }
         });
     }

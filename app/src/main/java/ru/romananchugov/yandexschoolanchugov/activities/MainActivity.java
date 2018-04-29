@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         activity = this;
 
         selectedViews = new ArrayList<>();
@@ -300,12 +299,7 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(getApplicationContext(), R.string.load_soon, Toast.LENGTH_SHORT).show();
 
         final String token = credentials.getToken();
-
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create());
-
-        final Retrofit retrofit = builder.build();
+        final Retrofit retrofit = getRetrofit();
 
         DiskClientApi diskClientApi = retrofit.create(DiskClientApi.class);
         final Call<Link> call = diskClientApi.getUploadLink("OAuth " + token, file.getName());
@@ -422,16 +416,16 @@ public class MainActivity extends AppCompatActivity
 
     //отключение состояния выделения
     public void cancelSelectionMode(){
+        toolbar.getMenu().clear();
+        toolbar.setTitle(getResources().getString(R.string.app_name));
+        toolbar.setBackgroundResource(R.drawable.item_bg_card);
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.black));
         for(ImageView view:selectedViews){
             view.setPadding(1,1,1,1);
             view.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         }
         selectedViews.clear();
         selectedItems.clear();
-        toolbar.getMenu().clear();
-        toolbar.setTitle(getResources().getString(R.string.app_name));
-        toolbar.setBackgroundResource(R.drawable.item_bg_card);
-        toolbar.setTitleTextColor(getResources().getColor(android.R.color.black));
         isSelectionMode = false;
     }
 
@@ -448,6 +442,19 @@ public class MainActivity extends AppCompatActivity
                     REQUEST_EXTERNAL_STORAGE
             );
         }
+    }
+
+    public Retrofit getRetrofit(){
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create());
+
+        return builder.build();
+    }
+    public String getToken(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String token = preferences.getString(TOKEN, null);
+        return token;
     }
 
 

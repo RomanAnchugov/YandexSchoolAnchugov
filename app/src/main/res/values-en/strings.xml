@@ -31,4 +31,18 @@
     <string name="share">share</string>
     <string name="slider_position">%1$d of %2$d</string>
     <string name="about_description">Test assignment to Yandex mobile development school</string>
+    <string name="storage_occupation">Bussy</string>
+    <string name="storage_info">Storage</string>
+    <string name="pick_image_from_gallery">You must select a photo from the gallery</string>
+    <string name="overall_storage">Overall volume</string>
+    <string name="trash">Trash</string>
+    <string name="clear_trash">Empty trash</string>
+    <string name="restore">Recover files from the trash</string>
+    <string name="successful_trash_clear">Trash successfully cleared</string>
+    <string name="restore_photos">Restore photo</string>
+    <string name="successful_restored_trash">All photos are successfully restored</string>
+    <string name="attention">Attention</string>
+    <string name="forever_dialog_description">All files will be irretrievably deleted</string>
+    <string name="trash_is_empty">There are no photos in the trash</string>
+    <string name="disk_api_link"><a href="https://tech.yandex.ru/disk/"> Made with Yandex.Disk api </a></string>
 </resources>

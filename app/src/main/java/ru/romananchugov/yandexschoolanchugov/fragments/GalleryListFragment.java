@@ -66,11 +66,9 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String username = preferences.getString(MainActivity.USERNAME, null);
         String token = preferences.getString(TOKEN, null);
-
         credentials = new Credentials(username, token);
         setRetainInstance(true);
     }
@@ -99,7 +97,12 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
             }
         });
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3){
+            @Override
+            public boolean canScrollVertically() {
+                return !activity.isSelectionMode();
+            }
+        };
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener( new RecyclerView.OnScrollListener(){

@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.widget.Toast;
@@ -19,14 +17,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
-import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
+import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
 
-import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
-import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.GALLERY_FRAGMENT_TAG;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PROGRESS_DIALOG_TAG;
 
@@ -76,18 +71,11 @@ public class DeletePhotosDialog extends DialogFragment {
     }
 
     public void deleteSelectedPhotos(){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String token = preferences.getString(TOKEN, null);
-
         for(final GalleryItem item: selectedItems) {
-            Retrofit.Builder builder = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create());
-
-            final Retrofit retrofit = builder.build();
+            final Retrofit retrofit = activity.getRetrofit();
             DiskClientApi diskClientApi = retrofit.create(DiskClientApi.class);
             final Call<Link> call = diskClientApi
-                    .deletePhoto("OAuth " + token, item.getPath(), "false");
+                    .deletePhoto("OAuth " + activity.getToken(), item.getPath(), "false");
 
             call.enqueue(new Callback<Link>() {
                 @Override
@@ -103,11 +91,13 @@ public class DeletePhotosDialog extends DialogFragment {
                         progressDialog.dismiss();
                         activity.cancelSelectionMode();
                     }
+                    call.cancel();
                 }
 
                 @Override
                 public void onFailure(Call<Link> call, Throwable t) {
                     Toast.makeText(activity, R.string.uploading_failure, Toast.LENGTH_LONG).show();
+                    call.cancel();
                     progressDialog.dismiss();
                 }
             });

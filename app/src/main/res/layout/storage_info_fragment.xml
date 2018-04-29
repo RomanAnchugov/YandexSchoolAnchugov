@@ -70,14 +70,35 @@
             android:background="@color/yellow"
             android:layout_below="@id/bars_container"/>
 
+        <TextView
+            android:id="@+id/trash_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/info_divider"
+            android:layout_marginTop="10dp"
+            android:text="@string/empty_trash"
+            android:visibility="gone"
+            />
+
         <LinearLayout
             android:id="@+id/trash_clear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/info_divider"
+            android:layout_below="@+id/trash_status"
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
             android:padding="10dp">
+
+            <Button
+                android:id="@+id/clear_trash_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/yellow"
+                android:text="@string/clear_trash"
+                android:textColor="@android:color/black"
+                android:layout_marginEnd="5dp"/>
 
             <Button
                 android:id="@+id/restore_trash_button"
@@ -89,15 +110,6 @@
                 android:background="@color/blue"
                 android:layout_marginEnd="5dp"/>
 
-            <Button
-                android:id="@+id/clear_trash_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/red"
-                android:text="@string/clear_trash"
-                android:textColor="@android:color/white"
-                android:layout_marginEnd="5dp"/>
         </LinearLayout>
 
         <View

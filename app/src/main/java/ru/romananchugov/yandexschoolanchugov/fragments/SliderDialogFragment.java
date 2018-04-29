@@ -21,6 +21,7 @@ import com.xgc1986.parallaxPagerTransformer.ParallaxPagerTransformer;
 import java.util.List;
 
 import ru.romananchugov.yandexschoolanchugov.R;
+import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
 import ru.romananchugov.yandexschoolanchugov.adapters.SliderAdapter;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 
@@ -35,6 +36,7 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
 
     private static final String TAG = SliderDialogFragment.class.getSimpleName();
 
+    private MainActivity activity;
     private List<GalleryItem> galleryItems;
     private int position;
 
@@ -47,12 +49,13 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
 
     private ViewPager viewPager;
 
-    private SliderDialogFragment(List<GalleryItem> galleryItems){
+    private SliderDialogFragment(List<GalleryItem> galleryItems, MainActivity activity){
         position = 0;
         this.galleryItems = galleryItems;
+        this.activity = activity;
     }
-    public static SliderDialogFragment newInstance(List<GalleryItem> galleryItems){
-        return new SliderDialogFragment(galleryItems);
+    public static SliderDialogFragment newInstance(List<GalleryItem> galleryItems, MainActivity activity){
+        return new SliderDialogFragment(galleryItems, activity);
     }
 
     @Override
@@ -81,7 +84,7 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
         ParallaxPagerTransformer transformer = new ParallaxPagerTransformer(R.id.slider_item_image_view);
         transformer.setSpeed(.6f);
         viewPager.setPageTransformer(false, transformer);
-        viewPager.setAdapter(new SliderAdapter(getActivity(), galleryItems, infoContainer));
+        viewPager.setAdapter(new SliderAdapter(activity, galleryItems, infoContainer));
         viewPager.addOnPageChangeListener(viewPagerChangeListener);
 
         setCurrentImage(position);

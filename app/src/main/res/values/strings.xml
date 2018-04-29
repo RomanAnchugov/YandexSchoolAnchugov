@@ -41,4 +41,9 @@
     <string name="successful_trash_clear">Корзина успешно очищена</string>
     <string name="restore_photos">Восстановить фото</string>
     <string name="successful_restored_trash">Все фотографии успешно восстановленны</string>
+    <string name="attention">Внимание</string>
+    <string name="forever_dialog_description">Все файлы будут безвозвратно удалены</string>
+    <string name="trash_is_empty">Фотографий в корзине нет</string>
+    <string name="disk_api_link"><a href="https://tech.yandex.ru/disk/">Выполненно при помощи Яндекс.Диск api</a></string>
+    <string name="empty_trash">Корзина пуста</string>
 </resources>

@@ -7,11 +7,11 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.lzyzsd.circleprogress.ArcProgress;
@@ -32,6 +32,7 @@ import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
 import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.BASE_URL;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.CLEAR_TRASH_DIALOG_TAG;
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PROGRESS_DIALOG_TAG;
 
 /**
  * Created by romananchugov on 29.04.2018.
@@ -43,9 +44,11 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
     private static final String TAG = StorageInfoFragment.class.getSimpleName();
 
     private MainActivity activity;
+    private ProgressDialog progressDialog;
 
     private ArcProgress storageInfoPg;
     private ArcProgress trashInfoPg;
+    private TextView trashStatus;
     private Button clearTrashButton;
     private Button restoreTrashButton;
 
@@ -76,6 +79,9 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
         clearTrashButton.setOnClickListener(this);
         restoreTrashButton = v.findViewById(R.id.restore_trash_button);
         restoreTrashButton.setOnClickListener(this);
+        trashStatus = v.findViewById(R.id.trash_status);
+
+        progressDialog = ProgressDialog.newInstance();
 
         loadStorageInfo();
 
@@ -97,18 +103,11 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
 
     //загружает информацию о диске
     private void loadStorageInfo() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String token = preferences.getString(TOKEN, null);
+        progressDialog.show(activity.getSupportFragmentManager(), PROGRESS_DIALOG_TAG);
 
-
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create());
-
-        final Retrofit retrofit = builder.build();
-
+        final Retrofit retrofit = activity.getRetrofit();
         DiskClientApi clientApi = retrofit.create(DiskClientApi.class);
-        final Call<DiskInfo> call = clientApi.getStorageInfo("OAuth " + token);
+        final Call<DiskInfo> call = clientApi.getStorageInfo("OAuth " + activity.getToken());
 
         call.enqueue(new Callback<DiskInfo>() {
             @Override
@@ -119,6 +118,10 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
 
                     storageInfoPg.setProgress((int)(overallPercent * 100));
                     trashInfoPg.setProgress((int)(trashPercent * 100));
+                    if(response.body().getTrashSize() == 0){
+                        disableFunctions();
+                    }
+                    progressDialog.dismiss();
                     call.cancel();
                 }
             }
@@ -154,16 +157,17 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
                         if(resource.getMimeType().equals("image/jpeg")
                                 || resource.getMimeType().equals("image/png")
                                 || resource.getMimeType().equals("image/bmp")){
-
                             restore(resource.getPath().getPath());
                             restoringFlag = true;
-
                         }
                     }
                 }
 
                 if(!restoringFlag){
-                    Toast.makeText(activity, "Фотографий в корзине нет", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, R.string.trash_is_empty, Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(activity, R.string.successful_restored_trash, Toast.LENGTH_SHORT).show();
+                    disableFunctions();
                 }
                 call.cancel();
             }
@@ -178,25 +182,14 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
 
     //восстанавливает фотографию из корзины
     public void restore(String path){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String token = preferences.getString(TOKEN, null);
-
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create());
-
-        final Retrofit retrofit = builder.build();
+        final Retrofit retrofit = activity.getRetrofit();
 
         DiskClientApi clientApi = retrofit.create(DiskClientApi.class);
-        final Call<Link> call = clientApi.restorePhoto("OAuth " + token, path);
+        final Call<Link> call = clientApi.restorePhoto("OAuth " + activity.getToken(), path);
 
         call.enqueue(new Callback<Link>() {
             @Override
             public void onResponse(Call<Link> call, Response<Link> response) {
-                if(response.code() == 201){
-                    Toast.makeText(activity, R.string.successful_restored_trash, Toast.LENGTH_SHORT).show();
-                }
-                Log.i(TAG, "onResponse: " + response.message());
                 call.cancel();
             }
 
@@ -206,7 +199,16 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
                 call.cancel();
             }
         });
+    }
 
-
+    //отключение функциональных кнопок
+    public void disableFunctions(){
+        clearTrashButton.setEnabled(false);
+        restoreTrashButton.setEnabled(false);
+        clearTrashButton.setBackgroundColor(getResources().getColor(R.color.light_gray));
+        restoreTrashButton.setBackgroundColor(getResources().getColor(R.color.light_gray));
+        clearTrashButton.setTextColor(getResources().getColor(android.R.color.white));
+        restoreTrashButton.setTextColor(getResources().getColor(android.R.color.white));
+        trashStatus.setVisibility(View.VISIBLE);
     }
 }
