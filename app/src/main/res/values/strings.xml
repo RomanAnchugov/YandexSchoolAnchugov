@@ -14,7 +14,7 @@
     <string name="selection_placeholder">Выбрано %1$s</string>
     <string name="delete_dialog_title">Удалить фотографии?</string>
     <string name="delete_dialog_message">Все фотографии будут перемещены в корзину</string>
-    <string name="share">share</string>
+    <string name="share">Поделиться</string>
     <string name="deleting_error">При удалении возникла ошибка</string>
     <string name="successful_uploading">Фото успешно загружено</string>
     <string name="uploading_name_conflict">Фото с таким именем уже существует</string>
@@ -23,7 +23,7 @@
     <string name="slider_position">%1$d из %2$d</string>
     <string name="add_new_photo">Добавить новое фото</string>
     <string name="uploading">Загрузка</string>
-    <string name="error">Ошибка</string>
+    <string name="error">Ошибка, проверьте своё интернет соединения</string>
     <string name="share_images_to">Отправить картинки в..</string>
     <string name="wait_upload">Подождите</string>
     <string name="wait_for_load">Подождите, картинка загружается</string>

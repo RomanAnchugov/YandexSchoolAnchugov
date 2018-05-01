@@ -72,7 +72,7 @@ public class DeletePhotosDialog extends DialogFragment {
         return builder.create();
     }
 
-    public void deleteSelectedPhotos(){
+    private void deleteSelectedPhotos(){
         final boolean[] endFlag = {false};//флаг для индикации очищения корзины
         for(final GalleryItem item: selectedItems) {
             final Retrofit retrofit = activity.getRetrofit();

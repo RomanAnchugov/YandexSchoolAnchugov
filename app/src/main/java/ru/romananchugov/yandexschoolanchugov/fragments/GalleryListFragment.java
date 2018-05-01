@@ -121,6 +121,12 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        adapter.stopLoading();
+    }
+
+    @Override
     public Loader<List<GalleryItem>> onCreateLoader(int i, Bundle bundle) {
         return new GalleryItemsLoader(getActivity(), credentials);
     }

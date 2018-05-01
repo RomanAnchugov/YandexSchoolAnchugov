@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -172,6 +173,7 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
 
                 //находим в корзине все картинки и восстанавливаем их
                 for (Resource resource : response.body().getResourceList().getItems()) {
+                    Log.i(TAG, "onResponse: " + resource.getMimeType());
                     if (resource.getMimeType().equals("image/jpeg")
                             || resource.getMimeType().equals("image/png")
                             || resource.getMimeType().equals("image/bmp")) {
