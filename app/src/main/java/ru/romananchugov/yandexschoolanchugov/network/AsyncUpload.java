@@ -2,6 +2,8 @@ package ru.romananchugov.yandexschoolanchugov.network;
 
 /**
  * Created by romananchugov on 28.04.2018.
+ *
+ * Ассинхронная загрузка фотографи на диск
  */
 
 import android.annotation.SuppressLint;

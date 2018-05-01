@@ -28,6 +28,8 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.SLIDER_IMAGE
 
 /**
  * Created by romananchugov on 11.04.2018.
+ *
+ * Фрагмент слайдера фотографий
  */
 
 @SuppressLint("ValidFragment")
@@ -76,13 +78,15 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
         infoContainer = v.findViewById(R.id.slider_info_container);
         backButton = v.findViewById(R.id.slider_back_button);
         backButton.setOnClickListener(this);
-        shareButton = v.findViewById(R.id.slide_share_button);
+        shareButton = v.findViewById(R.id.slider_share_button);
         shareButton.setOnClickListener(this);
 
         viewPager = v.findViewById(R.id.slider_view_pager);
+        //использую стронний трансформер для параллакс эффекта
         ParallaxPagerTransformer transformer = new ParallaxPagerTransformer(R.id.slider_item_image_view);
         transformer.setSpeed(.6f);
         viewPager.setPageTransformer(false, transformer);
+
         viewPager.setAdapter(new SliderAdapter(activity, galleryItems, infoContainer));
         viewPager.addOnPageChangeListener(viewPagerChangeListener);
 
@@ -97,7 +101,7 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
             case R.id.slider_back_button:
                 this.dismiss();
                 break;
-            case R.id.slide_share_button:
+            case R.id.slider_share_button:
                 if(galleryItems.get(position).getDownloadLink() != null) {
                     Intent shareIntent = new Intent();
                     shareIntent.setAction(Intent.ACTION_SEND);
@@ -118,6 +122,7 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
         displayImageInfo(this.position);
     }
 
+    //обновление информации о фотографии
     public void displayImageInfo(int position){
         imagesCountTextView.setText(getResources().getString(R.string.slider_position, (position + 1), galleryItems.size()));
 

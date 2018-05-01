@@ -18,6 +18,8 @@ import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.USER
 
 /**
  * Created by romananchugov on 17.04.2018.
+ *
+ * Диалог для принятия выхода из приложения
  */
 
 @SuppressLint("ValidFragment")

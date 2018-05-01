@@ -15,6 +15,8 @@ import ru.romananchugov.yandexschoolanchugov.R;
 
 /**
  * Created by romananchugov on 28.04.2018.
+ *
+ * Фрагмент - о приложении
  */
 
 @SuppressLint("ValidFragment")
@@ -36,6 +38,7 @@ public class AboutAppFragment extends Fragment {
         return v;
     }
 
+    //делаем ссылку на апи кликабельной
     private void setCopyrightLink() {
         copyrightTextView.setMovementMethod(LinkMovementMethod.getInstance());
     }

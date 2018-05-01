@@ -18,6 +18,8 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.SLIDER_IMAGE
 
 /**
  * Created by romananchugov on 10.04.2018.
+ *
+ * листенер для клика по элементам галереи
  */
 
 public class GalleryClickListener implements View.OnClickListener {

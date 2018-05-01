@@ -8,6 +8,8 @@ import android.widget.ImageView;
 
 /**
  * Created by romananchugov on 23.04.2018.
+ *
+ * всегда квадратная картинка
  */
 
 @SuppressLint("AppCompatCustomView")

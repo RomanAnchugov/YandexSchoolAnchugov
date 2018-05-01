@@ -27,6 +27,8 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PROGRESS_DIA
 
 /**
  * Created by romananchugov on 21.04.2018.
+ *
+ * Диалог для принятия удаления фотографий(перемещения в корзину)
  */
 
 @SuppressLint("ValidFragment")
@@ -71,6 +73,7 @@ public class DeletePhotosDialog extends DialogFragment {
     }
 
     public void deleteSelectedPhotos(){
+        final boolean[] endFlag = {false};//флаг для индикации очищения корзины
         for(final GalleryItem item: selectedItems) {
             final Retrofit retrofit = activity.getRetrofit();
             DiskClientApi diskClientApi = retrofit.create(DiskClientApi.class);
@@ -84,19 +87,21 @@ public class DeletePhotosDialog extends DialogFragment {
 
                     GalleryListFragment galleryListFragment =
                             (GalleryListFragment) activity.getSupportFragmentManager().findFragmentByTag(GALLERY_FRAGMENT_TAG);
-                    galleryListFragment.removeItem(item);
+                    galleryListFragment.removeItem(item);//удаляем эти элементы из ресайклера
 
-                    if(selectedItems.size() == 0){
-                        Toast.makeText(activity, R.string.moved_to_trash, Toast.LENGTH_LONG).show();
+                    //если удалили последний элемент
+                    if(selectedItems.size() == 0 && !endFlag[0]){
+                        Toast.makeText(activity, R.string.moved_to_trash, Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                         activity.cancelSelectionMode();
+                        endFlag[0] = true;
                     }
                     call.cancel();
                 }
 
                 @Override
                 public void onFailure(Call<Link> call, Throwable t) {
-                    Toast.makeText(activity, R.string.uploading_failure, Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity, R.string.deleting_error, Toast.LENGTH_LONG).show();
                     call.cancel();
                     progressDialog.dismiss();
                 }

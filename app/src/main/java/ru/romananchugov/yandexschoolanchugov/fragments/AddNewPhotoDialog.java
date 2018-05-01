@@ -23,6 +23,8 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
 
 /**
  * Created by romananchugov on 13.04.2018.
+ *
+ * Диалог для добавления фотографии
  */
 
 @SuppressLint("ValidFragment")
@@ -80,6 +82,7 @@ public class AddNewPhotoDialog extends DialogFragment {
         Uri data = Uri.parse(pictureDirectoryPath);
         intent.setDataAndType(data, "image/*");
 
+        //результат получаем в главной активити
         activity.startActivityForResult(Intent.createChooser(intent, getString(R.string.select_photo)), PICK_IMAGE);
     }
 

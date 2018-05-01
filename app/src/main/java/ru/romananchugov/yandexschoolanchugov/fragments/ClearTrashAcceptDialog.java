@@ -23,9 +23,10 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PROGRESS_DIA
 
 /**
  * Created by romananchugov on 29.04.2018.
+ *
+ * Диалог для принятия очистки корзины
  */
 
-//диалог для принятия очистки корзины
 @SuppressLint("ValidFragment")
 public class ClearTrashAcceptDialog extends DialogFragment {
 

@@ -37,6 +37,8 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PROGRESS_DIA
 
 /**
  * Created by romananchugov on 29.04.2018.
+ *
+ * Фрагмент для отображения информации о памяти и управления корзины
  */
 
 @SuppressLint("ValidFragment")
@@ -47,8 +49,10 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
     private MainActivity activity;
     private ProgressDialog progressDialog;
 
+    //стороннее вью для отображения загруженности диска
     private ArcProgress storageInfoPg;
     private ArcProgress trashInfoPg;
+
     private TextView trashStatus;
     private Button clearTrashButton;
     private Button restoreTrashButton;
@@ -102,7 +106,7 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
         }
     }
 
-    //загружает информацию о диске
+    //загружаем информацию о диске
     private void loadStorageInfo() {
         progressDialog.show(activity.getSupportFragmentManager(), PROGRESS_DIALOG_TAG);
 
@@ -128,7 +132,7 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
                     trashInfoPg.startAnimation(trashAnimation);
                     trashInfoPg.setProgress((int) (trashPercent * 100));
 
-                    //если корзина пуст
+                    //если корзина пуста
                     if (response.body().getTrashSize() == 0) {
                         disableFunctions();
                     }

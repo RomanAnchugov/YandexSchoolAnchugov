@@ -13,6 +13,8 @@ import ru.romananchugov.yandexschoolanchugov.R;
 
 /**
  * Created by romananchugov on 14.04.2018.
+ *
+ * Диалог для показывания загруки
  */
 
 public class ProgressDialog extends DialogFragment {

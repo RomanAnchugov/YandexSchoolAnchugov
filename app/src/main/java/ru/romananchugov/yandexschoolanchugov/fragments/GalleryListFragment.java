@@ -34,12 +34,13 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.ADD_PHOTO_DI
 
 /**
  * Created by romananchugov on 07.04.2018.
+ *
+ * Фрагмент главноей страницы галереи
  */
 
 @SuppressLint("ValidFragment")
 public class GalleryListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<GalleryItem>>
         ,SwipeRefreshLayout.OnRefreshListener {
-
     private static final String TAG = GalleryListAdapter.class.getSimpleName();
 
     private String title;
@@ -86,14 +87,13 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         refresher.setColorSchemeResources(
                 android.R.color.black,
                 R.color.blue);
-
         refresher.setOnRefreshListener(this);
 
         fab = v.findViewById(R.id.add_new_image_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToAddPhotoFragment();
+                goToAddPhotoDialogFragment();
             }
         });
 
@@ -101,7 +101,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
             @Override
             public boolean canScrollVertically() {
                 return !activity.isSelectionMode();
-            }
+            }//нельзя скроллить при режиме выбора, чтобы выбирать только на одной странице
         };
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
@@ -121,11 +121,6 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        getActivity().setTitle(title);
-    }
-
-    @Override
     public Loader<List<GalleryItem>> onCreateLoader(int i, Bundle bundle) {
         return new GalleryItemsLoader(getActivity(), credentials);
     }
@@ -142,8 +137,8 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onRefresh() {
         adapter.stopLoading();
-        getLoaderManager().restartLoader(0, null, this);
         activity.cancelSelectionMode();
+        getLoaderManager().restartLoader(0, null, this);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -152,7 +147,8 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         }, 1500);
     }
 
-    public void goToAddPhotoFragment(){
+    //открываем диалг для добавления фотографии
+    public void goToAddPhotoDialogFragment(){
         activity.cancelSelectionMode();
         AddNewPhotoDialog
                 .newInstance(activity, getString(R.string.add_new_photo))
@@ -162,9 +158,12 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     public void setData(List<GalleryItem> galleryItemList) {
         galleryItems.clear();
 
+        //удаляем всё, что не является фотографией
         for (int i = 0; i < galleryItemList.size(); i++) {
             GalleryItem item = galleryItemList.get(i);
-            if (!(item.getMime().equals("image/png") || item.getMime().equals("image/jpeg"))) {
+            if (!(item.getMime().equals("image/png")
+                    || item.getMime().equals("image/jpeg")
+                    || item.getMime().equals("image/bmp"))) {
                 galleryItemList.remove(item);
                 i--;
             }

@@ -7,7 +7,7 @@
     <string name="moved_to_trash">Photos successfully moved to trash</string>
     <string name="delete_dialog_title">Delete photos?</string>
     <string name="logout_dialog_message">The application will be closed</string>
-    <string name="uploading_failure">An error occurred while loading</string>
+    <string name="deleting_error">An error occurred while deleting</string>
     <string name="wait_for_load">Please wait, the image is loading</string>
     <string name="wait_upload">Please wait</string>
     <string name="error">Error</string>
@@ -45,4 +45,8 @@
     <string name="forever_dialog_description">All files will be irretrievably deleted</string>
     <string name="trash_is_empty">There are no photos in the trash</string>
     <string name="disk_api_link"><a href="https://tech.yandex.ru/disk/"> Made with Yandex.Disk api </a></string>
+    <string name="empty_trash">There are no photos in the trash</string>
+    <string name="gallery_load_wait">Gallery is loading, please wait</string>
+    <string name="you_should_login">You must be logged in to the Yandex account</string>
+    <string name="sign_in">Sign in</string>
 </resources>

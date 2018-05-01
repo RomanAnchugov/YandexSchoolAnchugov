@@ -34,15 +34,18 @@ import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
 
 /**
  * Created by romananchugov on 11.04.2018.
+ *
+ * Адаптер для ViewPager в SliderDialogFragment
  */
 
 public class SliderAdapter extends PagerAdapter {
     public static final String TAG = SliderAdapter.class.getSimpleName();
-    private static final int ANIMATION_DURATION = 300;
+    private static final int ANIMATION_DURATION = 300;//длительность исчезновения информационных полей
 
     private List<GalleryItem> galleryItems;
     private RelativeLayout infoContainer;
     private MainActivity activity;
+
     private boolean infoVisible;
     private Animation fadeIn;
     private Animation fadeOut;
@@ -68,6 +71,8 @@ public class SliderAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.slider_item, container, false);
+
+        //использую сторонний вью, в котором есть поддержка различных жестов
         PhotoView imageView = v.findViewById(R.id.slider_item_image_view);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,8 +82,10 @@ public class SliderAdapter extends PagerAdapter {
         });
 
         GalleryItem item = galleryItems.get(position);
+
+        //проверяем наличие ссылки для загрузки
         if(item.getDownloadLink() != null) {
-            glideLoading(item, imageView, position);
+            glideLoading(item, imageView);
         }else{
             firstLoad(item, position, imageView);
         }
@@ -103,11 +110,12 @@ public class SliderAdapter extends PagerAdapter {
         container.removeView((View) object);
     }
 
-    private void glideLoading(GalleryItem item, ImageView imageView, int position) {
+    //загрузка фото при имеющейся ссылки для загрузки
+    private void glideLoading(GalleryItem item, ImageView imageView) {
         DrawableCrossFadeFactory.Builder builder = new DrawableCrossFadeFactory.Builder();
         builder.setCrossFadeEnabled(false);
         Glide
-                .with(activity)
+                .with(imageView)
                 .load(item.getDownloadLink())
                 .thumbnail(.5f)
                 .apply(new RequestOptions()
@@ -118,6 +126,7 @@ public class SliderAdapter extends PagerAdapter {
                 .into(imageView);
     }
 
+    //получение ссылки для скачивание фото
     private void firstLoad(final GalleryItem item, final int position, final ImageView imageView) {
         final Retrofit retrofit = activity.getRetrofit();
 
@@ -128,7 +137,7 @@ public class SliderAdapter extends PagerAdapter {
             @Override
             public void onResponse(Call<DownloadLink> call, Response<DownloadLink> response) {
                 item.setDownloadLink(response.body().getHref());
-                glideLoading(item, imageView, position);
+                glideLoading(item, imageView);
                 call.cancel();
             }
 
@@ -139,7 +148,7 @@ public class SliderAdapter extends PagerAdapter {
         });
     }
 
-    public void toggleInfoVisibility(){
+    private void toggleInfoVisibility(){
         if(infoVisible){
             infoContainer.startAnimation(fadeOut);
             infoContainer.setVisibility(View.GONE);

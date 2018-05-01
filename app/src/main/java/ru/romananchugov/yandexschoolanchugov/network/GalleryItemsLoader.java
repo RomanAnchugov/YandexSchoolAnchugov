@@ -21,6 +21,8 @@ import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 
 /**
  * Created by romananchugov on 07.04.2018.
+ *
+ * Лоадер плоского списка файлов на диске
  */
 
 public class GalleryItemsLoader extends AsyncTaskLoader<List<GalleryItem>> {
