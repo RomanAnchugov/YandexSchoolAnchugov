@@ -15,7 +15,7 @@
     <string name="delete_dialog_title">Удалить фотографии?</string>
     <string name="delete_dialog_message">Все фотографии будут перемещены в корзину</string>
     <string name="share">share</string>
-    <string name="uploading_failure">При загрузке возникли ошибка</string>
+    <string name="uploading_failure">При загрузке возникла ошибка</string>
     <string name="successful_uploading">Фото успешно загружено</string>
     <string name="uploading_name_conflict">Фото с таким именем уже существует</string>
     <string name="moved_to_trash">Фотографии успешно перемещены в корзину</string>
@@ -46,4 +46,5 @@
     <string name="trash_is_empty">Фотографий в корзине нет</string>
     <string name="disk_api_link"><a href="https://tech.yandex.ru/disk/">Выполненно при помощи Яндекс.Диск api</a></string>
     <string name="empty_trash">Корзина пуста</string>
+    <string name="gallery_load_wait">Галерея загружается, подождите</string>
 </resources>

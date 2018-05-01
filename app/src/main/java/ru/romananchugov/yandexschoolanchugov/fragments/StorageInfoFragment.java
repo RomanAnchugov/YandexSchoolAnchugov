@@ -141,6 +141,7 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
             @Override
             public void onFailure(Call<DiskInfo> call, Throwable t) {
                 Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
                 call.cancel();
             }
         });

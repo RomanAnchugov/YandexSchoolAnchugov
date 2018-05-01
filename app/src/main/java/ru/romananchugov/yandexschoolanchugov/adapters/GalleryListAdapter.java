@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -129,6 +130,8 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         callsMap.put(position, call);
     }
 
+
+
     public void glideLoading(int position, GalleryListAdapter.ViewHolder holder) {
                 Glide
                     .with(activity.getApplicationContext())
@@ -161,6 +164,14 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
         public void bindDrawable(Drawable drawable) {
             imageView.setImageDrawable(drawable);
         }
+    }
+
+    public void notifyAdapterDataSetChanged(){
+        if(activity.isSelectionMode()) {
+            Toast.makeText(activity.getApplicationContext(), R.string.gallery_load_wait, Toast.LENGTH_SHORT).show();
+            activity.cancelSelectionMode();
+        }
+        notifyDataSetChanged();
     }
 
 }

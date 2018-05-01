@@ -23,8 +23,8 @@ import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
  * Created by romananchugov on 07.04.2018.
  */
 
-public class GalleryLoader extends AsyncTaskLoader<List<GalleryItem>> {
-    private static final String TAG = "GalleryLoader";
+public class GalleryItemsLoader extends AsyncTaskLoader<List<GalleryItem>> {
+    private static final String TAG = "GalleryItemsLoader";
 
     private static final int ITEMS_PER_REQUEST = 30;
 
@@ -34,7 +34,7 @@ public class GalleryLoader extends AsyncTaskLoader<List<GalleryItem>> {
 
     private List<GalleryItem> galleryItemList;
 
-    public GalleryLoader(Context context, Credentials credentials) {
+    public GalleryItemsLoader(Context context, Credentials credentials) {
         super(context);
         this.credentials = credentials;
         handler = new Handler();

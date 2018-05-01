@@ -27,7 +27,7 @@ import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
 import ru.romananchugov.yandexschoolanchugov.adapters.GalleryListAdapter;
 import ru.romananchugov.yandexschoolanchugov.models.GalleryItem;
 import ru.romananchugov.yandexschoolanchugov.network.Credentials;
-import ru.romananchugov.yandexschoolanchugov.network.GalleryLoader;
+import ru.romananchugov.yandexschoolanchugov.network.GalleryItemsLoader;
 
 import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
 import static ru.romananchugov.yandexschoolanchugov.utils.Constants.ADD_PHOTO_DIALOG_TAG;
@@ -127,7 +127,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public Loader<List<GalleryItem>> onCreateLoader(int i, Bundle bundle) {
-        return new GalleryLoader(getActivity(), credentials);
+        return new GalleryItemsLoader(getActivity(), credentials);
     }
 
     @Override
@@ -171,12 +171,11 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         }
 
         galleryItems.addAll(galleryItemList);
-        adapter.notifyDataSetChanged();
+        adapter.notifyAdapterDataSetChanged();
     }
 
     public void removeItem(GalleryItem item){
-
         galleryItems.remove(item);
-        adapter.notifyDataSetChanged();
+        adapter.notifyAdapterDataSetChanged();
     }
 }

@@ -173,18 +173,19 @@ public class MainActivity extends AppCompatActivity
                         .newInstance(selectedItems, this).show(getSupportFragmentManager(), DELETE_DIALOG_TAG);
                 break;
             case R.id.share:
-                ArrayList<Uri> sharedUrl = new ArrayList<>();
+                StringBuilder sharedUrl = new StringBuilder();
                 for(GalleryItem galleryItem:selectedItems){
                     if(galleryItem.getDownloadLink() != null) {
-                        sharedUrl.add(Uri.parse(galleryItem.getDownloadLink()));
+                        sharedUrl.append("\n").append(galleryItem.getDownloadLink());
                     }
                 }
 
                 Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
-                shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, sharedUrl);
-                shareIntent.setType("image/*");
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, sharedUrl.toString());
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.share_images_to)));
+
                 break;
         }
         return false;

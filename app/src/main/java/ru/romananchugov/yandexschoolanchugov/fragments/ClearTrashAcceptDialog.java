@@ -19,6 +19,8 @@ import ru.romananchugov.yandexschoolanchugov.R;
 import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
 import ru.romananchugov.yandexschoolanchugov.network.DiskClientApi;
 
+import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PROGRESS_DIALOG_TAG;
+
 /**
  * Created by romananchugov on 29.04.2018.
  */
@@ -62,6 +64,8 @@ public class ClearTrashAcceptDialog extends DialogFragment {
 
     //очищает корзину при положительном ответе в диалоге
     private void clearTrash(){
+        final ProgressDialog progressDialog = ProgressDialog.newInstance();
+        progressDialog.show(activity.getSupportFragmentManager(), PROGRESS_DIALOG_TAG);
 
         final Retrofit retrofit = activity.getRetrofit();
 
@@ -72,12 +76,14 @@ public class ClearTrashAcceptDialog extends DialogFragment {
             @Override
             public void onResponse(Call<Link> call, Response<Link> response) {
                 Toast.makeText(activity, R.string.successful_trash_clear, Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
                 call.cancel();
             }
 
             @Override
             public void onFailure(Call<Link> call, Throwable t) {
                 Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
                 call.cancel();
             }
         });
