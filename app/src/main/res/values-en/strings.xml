@@ -49,4 +49,5 @@
     <string name="gallery_load_wait">Gallery is loading, please wait</string>
     <string name="you_should_login">You must be logged in to the Yandex account</string>
     <string name="sign_in">Sign in</string>
+    <string name="toggle_slider_bg">Toggle background</string>
 </resources>

@@ -1,5 +1,7 @@
 package ru.romananchugov.yandexschoolanchugov.fragments;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -62,6 +64,8 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
     private ViewPager viewPager;
     private SliderAdapter sliderAdapter;
 
+    private boolean bgToggler;
+
     private SliderDialogFragment(List<GalleryItem> galleryItems, MainActivity activity){
         position = 0;
         this.galleryItems = galleryItems;
@@ -96,11 +100,13 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
         viewPager = v.findViewById(R.id.slider_view_pager);
         //использую стронний трансформер для параллакс эффекта
         ParallaxPagerTransformer transformer = new ParallaxPagerTransformer(R.id.slider_item_image_view);
-        transformer.setSpeed(.6f);
+        transformer.setSpeed(.5f);
         viewPager.setPageTransformer(false, transformer);
         sliderAdapter = new SliderAdapter(activity, galleryItems, infoContainer);
         viewPager.setAdapter(sliderAdapter);
         viewPager.addOnPageChangeListener(viewPagerChangeListener);
+
+        bgToggler = false;
 
         setCurrentImage(position);
 
@@ -150,6 +156,8 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
                     case R.id.slider_share_menu_item:
                         share();
                         return true;
+                    case R.id.slider_bg_toggle_menu_item:
+                        toggleSliderBg();
                     default:
                         return false;
                 }
@@ -208,6 +216,40 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
                 progressDialog.dismiss();
             }
         });
+    }
+
+    //меняем фон слайдера
+    private void toggleSliderBg(){
+        int black = getResources().getColor(android.R.color.black);
+        int white = getResources().getColor(android.R.color.white);
+
+        if(!bgToggler){
+            ValueAnimator blackToWhite = ValueAnimator.ofObject(new ArgbEvaluator(), black, white);
+            blackToWhite.setDuration(250);
+            blackToWhite.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    viewPager.setBackgroundColor((int) animator.getAnimatedValue());
+                }
+            });
+            blackToWhite.start();
+
+            viewPager.setBackgroundColor(white);
+            bgToggler = true;
+        }else{
+            ValueAnimator whiteToBlack = ValueAnimator.ofObject(new ArgbEvaluator(), white, black);
+            whiteToBlack.setDuration(250);
+            whiteToBlack.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    viewPager.setBackgroundColor((int) animator.getAnimatedValue());
+                }
+            });
+            whiteToBlack.start();
+
+            viewPager.setBackgroundColor(black);
+            bgToggler = false;
+        }
     }
 
     ViewPager.OnPageChangeListener  viewPagerChangeListener = new ViewPager.OnPageChangeListener() {

@@ -10,5 +10,8 @@
         android:id="@+id/slider_share_menu_item"
         android:title="@string/share"
         />
+    <item
+        android:id="@+id/slider_bg_toggle_menu_item"
+        android:title="@string/toggle_slider_bg"/>
 
 </menu>

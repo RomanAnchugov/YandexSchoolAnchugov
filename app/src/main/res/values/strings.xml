@@ -49,4 +49,5 @@
     <string name="gallery_load_wait">Галерея загружается, подождите</string>
     <string name="you_should_login">Вы должны войти в учётную запись Яндекс</string>
     <string name="sign_in">Войти</string>
+    <string name="toggle_slider_bg">Поменять фон</string>
 </resources>
