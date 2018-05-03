@@ -14,7 +14,7 @@ Project for Yandex's Mobile School
 - storage control
 - slider
 
-##Features
+## Features
 
 - android support 4.1+
 - landscape support
@@ -23,7 +23,7 @@ Project for Yandex's Mobile School
 - powerful slider(parallax, bg toggling, gestures)
 - support of two languages(en\ru)
 
-###Used libraries
+### Used libraries
 
 - [Glide](https://bumptech.github.io/glide/)
 - [Retrofit2](http://square.github.io/retrofit/)
