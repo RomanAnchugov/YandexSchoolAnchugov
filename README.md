@@ -5,7 +5,7 @@ Project for Yandex's Mobile School
 ![storageControl](https://github.com/RomanAnchugov/YandexSchoolAnchugov/blob/master/screens/storageControl.png)
 ![slider](https://github.com/RomanAnchugov/YandexSchoolAnchugov/blob/master/screens/slider.png)
 
-##Functions
+## Functions
 
 - loading all photos from your Yandex.Disk account
 - add new photos from your device 
