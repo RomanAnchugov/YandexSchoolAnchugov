@@ -37,7 +37,6 @@
     <string name="overall_storage">Overall volume</string>
     <string name="trash">Trash</string>
     <string name="clear_trash">Empty trash</string>
-    <string name="restore">Recover files from the trash</string>
     <string name="successful_trash_clear">Trash successfully cleared</string>
     <string name="restore_photos">Restore photo</string>
     <string name="successful_restored_trash">All photos are successfully restored</string>
@@ -50,4 +49,6 @@
     <string name="you_should_login">You must be logged in to the Yandex account</string>
     <string name="sign_in">Sign in</string>
     <string name="toggle_slider_bg">Toggle background</string>
+    <string name="me">Roman Anchugov</string>
+    <string name="reload_app">Please, reload app</string>
 </resources>

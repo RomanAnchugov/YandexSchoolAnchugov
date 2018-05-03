@@ -30,14 +30,13 @@
     <string name="load_soon">Загрузка скоро начнётся</string>
     <string name="select_photo">Выберете фотографию..</string>
     <string name="about_description">Тестовое задание в школу мобильной разработки Яндекса</string>
-    <string name="me">Roman Anchugov</string>
+    <string name="me">Роман Анчугов</string>
     <string name="storage_occupation">Занято</string>
     <string name="storage_info">Память</string>
     <string name="pick_image_from_gallery">Вы должны выбрать фотографию из галереии</string>
     <string name="overall_storage">Общий объём</string>
     <string name="trash">Корзина</string>
     <string name="clear_trash">Очистить корзину</string>
-    <string name="restore">Восстановить файлы из корзины</string>
     <string name="successful_trash_clear">Корзина успешно очищена</string>
     <string name="restore_photos">Восстановить фото</string>
     <string name="successful_restored_trash">Все фотографии успешно восстановленны</string>
@@ -50,4 +49,5 @@
     <string name="you_should_login">Вы должны войти в учётную запись Яндекс</string>
     <string name="sign_in">Войти</string>
     <string name="toggle_slider_bg">Поменять фон</string>
+    <string name="reload_app">Перезапустите приложение</string>
 </resources>

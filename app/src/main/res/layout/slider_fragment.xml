@@ -35,7 +35,7 @@
                 android:background="@android:color/transparent"
                 android:layout_marginStart="10dp"
                 android:layout_centerVertical="true"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="20dp" />
 
             <TextView
                 android:id="@+id/images_count_text_view"
@@ -72,7 +72,6 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginLeft="30dp"
             android:layout_marginStart="30dp" />
 
         <TextView
@@ -82,7 +81,6 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginLeft="30dp"
             android:layout_marginStart="30dp"/>
         </LinearLayout>
     </RelativeLayout>

@@ -25,7 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/overall_header"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:baselineAligned="false">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -88,6 +89,7 @@
             android:layout_below="@+id/trash_status"
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
+            style="?android:attr/buttonBarStyle"
             android:padding="10dp">
 
             <Button
@@ -98,6 +100,7 @@
                 android:background="@color/yellow"
                 android:text="@string/clear_trash"
                 android:textColor="@android:color/black"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_marginEnd="5dp"/>
 
             <Button
@@ -108,6 +111,7 @@
                 android:text="@string/restore_photos"
                 android:textColor="@android:color/white"
                 android:background="@color/blue"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_marginEnd="5dp"/>
 
         </LinearLayout>

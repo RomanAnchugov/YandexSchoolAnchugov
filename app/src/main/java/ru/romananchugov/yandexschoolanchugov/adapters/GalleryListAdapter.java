@@ -58,7 +58,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Drawable placeHolder = activity.getResources().getDrawable(R.drawable.ic_preload_placeholder);
+        Drawable placeHolder = activity.getResources().getDrawable(R.drawable.preload_placeholder);
         holder.bindDrawable(placeHolder);
 
         holder.imageView.setOnClickListener(
@@ -115,7 +115,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
             call.enqueue(new Callback<DownloadLink>() {
                 @Override
                 public void onResponse(Call<DownloadLink> call, Response<DownloadLink> response) {
-                    if(response.body() != null) {
+                    if(response.body() != null && response.body().getHref() != null) {
                         item.setDownloadLink(response.body().getHref());
                         glideLoading(position, holder);
                         call.cancel();
@@ -142,7 +142,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
                     .with(holder.imageView)
                     .load(galleryItems.get(position).getDownloadLink())
                     .apply(new RequestOptions()
-                            .error(R.drawable.ic_refresh_black_24dp)
+                            .error(R.drawable.ic_refresh)
                             .placeholder(R.drawable.image_placeholder)
                             .priority(Priority.NORMAL)
                             .timeout(60000)

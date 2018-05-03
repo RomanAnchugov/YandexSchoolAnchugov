@@ -87,7 +87,7 @@ public class SliderAdapter extends PagerAdapter {
         if(item.getDownloadLink() != null) {
             glideLoading(item, imageView);
         }else{
-            firstLoad(item, position, imageView);
+            firstLoad(item, imageView);
         }
 
         container.addView(v);
@@ -119,7 +119,7 @@ public class SliderAdapter extends PagerAdapter {
                 .load(item.getDownloadLink())
                 .thumbnail(.5f)
                 .apply(new RequestOptions()
-                        .error(R.drawable.ic_error_placeholder)
+                        .error(R.drawable.ic_refresh)
                         .placeholder(R.drawable.ic_slider_placeholder)
                         .priority(Priority.IMMEDIATE)
                         .timeout(60000))
@@ -127,7 +127,7 @@ public class SliderAdapter extends PagerAdapter {
     }
 
     //получение ссылки для скачивание фото
-    private void firstLoad(final GalleryItem item, final int position, final ImageView imageView) {
+    private void firstLoad(final GalleryItem item, final ImageView imageView) {
         final Retrofit retrofit = activity.getRetrofit();
 
         DiskClientApi clientApi = retrofit.create(DiskClientApi.class);
@@ -136,7 +136,9 @@ public class SliderAdapter extends PagerAdapter {
         call.enqueue(new Callback<DownloadLink>() {
             @Override
             public void onResponse(Call<DownloadLink> call, Response<DownloadLink> response) {
-                item.setDownloadLink(response.body().getHref());
+                if(response.body() != null && response.body().getHref() != null) {
+                    item.setDownloadLink(response.body().getHref());
+                }
                 glideLoading(item, imageView);
                 call.cancel();
             }

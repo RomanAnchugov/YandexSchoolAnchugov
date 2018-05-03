@@ -3,6 +3,7 @@ package ru.romananchugov.yandexschoolanchugov.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -43,8 +44,6 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         ,SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = GalleryListAdapter.class.getSimpleName();
 
-    private String title;
-
     private Credentials credentials;
 
     private SwipeRefreshLayout refresher;
@@ -57,7 +56,6 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
 
     private GalleryListFragment(MainActivity activity){
         this.activity = activity;
-        this.title = activity.getResources().getString(R.string.app_name);
     }
     public static GalleryListFragment newInstance(MainActivity activity){
         GalleryListFragment f = new GalleryListFragment(activity);
@@ -153,15 +151,23 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         }, 1500);
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            activity.cancelSelectionMode();
+        }
+    }
+
     //открываем диалг для добавления фотографии
-    public void goToAddPhotoDialogFragment(){
+    private void goToAddPhotoDialogFragment(){
         activity.cancelSelectionMode();
         AddNewPhotoDialog
                 .newInstance(activity, getString(R.string.add_new_photo))
                 .show(activity.getSupportFragmentManager(), ADD_PHOTO_DIALOG_TAG);
     }
 
-    public void setData(List<GalleryItem> galleryItemList) {
+    private void setData(List<GalleryItem> galleryItemList) {
         galleryItems.clear();
 
         //удаляем всё, что не является фотографией

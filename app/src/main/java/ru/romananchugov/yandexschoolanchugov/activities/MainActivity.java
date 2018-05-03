@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity
     private boolean isSelectionMode;
 
     //Запрос на запись файлов для api>23
-    public static void verifyStoragePermissions(Activity activity) {
+    private static void verifyStoragePermissions(Activity activity) {
         //Проверяем есть ли у нас доступ
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -281,7 +281,9 @@ public class MainActivity extends AppCompatActivity
         if (isSelectionMode) {
             cancelSelectionMode();
         } else {
-            getSupportActionBar().setTitle(R.string.app_name);
+            if(getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(R.string.app_name);
+            }
             super.onBackPressed();
         }
     }
@@ -292,11 +294,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     //обрабатываем полученные данный после логина в браузере
-    public void onLogin() {
+    private void onLogin() {
         Uri data = getIntent().getData();
         setIntent(null);
-
-        Log.i(TAG, "onLogin: " + data.toString());
 
         Pattern pattern = Pattern.compile("access_token=(.*?)(&|$)");
         Matcher matcher = pattern.matcher(data.toString());
@@ -320,12 +320,12 @@ public class MainActivity extends AppCompatActivity
         editor.apply();
     }
 
-    public void logout() {
+    private void logout() {
         LogoutAcceptDialog.newInstance(this).show(getSupportFragmentManager(), LOGOUT_DIALOG_TAG);
     }
 
     //получаем ссылку для загрузки файла на диск
-    public void getUploadLink(final Credentials credentials, final File file) {
+    private void getUploadLink(final Credentials credentials, final File file) {
         Toast.makeText(getApplicationContext(), R.string.load_soon, Toast.LENGTH_SHORT).show();
 
         final String token = credentials.getToken();
@@ -358,7 +358,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     //получаем путь на телефоне выбранной фотографии
-    public String getPath(Uri uri) {
+    private String getPath(Uri uri) {
 
         String path = null;
         String[] projection = {MediaStore.Files.FileColumns.DATA};
@@ -376,14 +376,14 @@ public class MainActivity extends AppCompatActivity
         return ((path == null || path.isEmpty()) ? (uri.getPath()) : path);
     }
 
-    public void addFragment(Fragment fragment, String tag) {
+    private void addFragment(Fragment fragment, String tag) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft = ft.replace(R.id.fragment_container, fragment, tag);
         ft.commit();
     }
 
-    public void closeNavDrawer() {
+    private void closeNavDrawer() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
     }

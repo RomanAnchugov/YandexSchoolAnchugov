@@ -31,8 +31,8 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.PICK_IMAGE;
 public class AddNewPhotoDialog extends DialogFragment {
     private static final String TAG = AddNewPhotoDialog.class.getSimpleName();
 
-    private MainActivity activity;
-    private String title;
+    private final MainActivity activity;
+    private final String title;
     private Button button;
 
 
@@ -73,7 +73,7 @@ public class AddNewPhotoDialog extends DialogFragment {
     }
 
     //открываем галерею для выбора картинки
-    public void chooseFile(){
+    private void chooseFile(){
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_PICK);
 

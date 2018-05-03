@@ -10,8 +10,11 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.widget.Toast;
 
 import ru.romananchugov.yandexschoolanchugov.R;
+import ru.romananchugov.yandexschoolanchugov.activities.MainActivity;
 
 import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.TOKEN;
 import static ru.romananchugov.yandexschoolanchugov.activities.MainActivity.USERNAME;
@@ -50,7 +53,20 @@ public class LogoutAcceptDialog extends DialogFragment {
                 editor.putString(USERNAME, "");
                 editor.putString(TOKEN, null);
                 editor.apply();
-                getActivity().finish();
+                if(getActivity() != null) {
+                    MainActivity activity = (MainActivity) getActivity();
+                    for(Fragment fragment: activity.getSupportFragmentManager().getFragments()){
+                        if(fragment != null){
+                            activity.getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .remove(fragment)
+                                    .commit();
+                        }
+                    }
+                    activity.startLogin();
+                }else{
+                    Toast.makeText(context, R.string.reload_app, Toast.LENGTH_SHORT).show();
+                }
             }
         });
         builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {

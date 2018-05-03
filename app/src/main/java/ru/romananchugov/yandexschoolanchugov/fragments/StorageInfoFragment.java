@@ -202,7 +202,7 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
     }
 
     //восстанавливает фотографию из корзины
-    public void restore(String path) {
+    private void restore(String path) {
         final Retrofit retrofit = activity.getRetrofit();
 
         DiskClientApi clientApi = retrofit.create(DiskClientApi.class);
@@ -223,7 +223,7 @@ public class StorageInfoFragment extends Fragment implements View.OnClickListene
     }
 
     //отключение функциональных кнопок
-    public void disableFunctions() {
+    private void disableFunctions() {
         clearTrashButton.setEnabled(false);
         restoreTrashButton.setEnabled(false);
         clearTrashButton.setBackgroundColor(getResources().getColor(R.color.light_gray));

@@ -7,12 +7,13 @@ import com.github.lzyzsd.circleprogress.ArcProgress;
 
 /**
  * Created by romananchugov on 29.04.2018.
+ *
+ * анимация для прогресса в StorageInfoFragment
  */
 
-//анимация для прогресса в StorageInfoFragment
 public class ArcProgressAnimation extends Animation {
     private ArcProgress arcProgress;
-    private double  to;
+    private double to;
 
     public ArcProgressAnimation(ArcProgress arcProgress, double to) {
         super();

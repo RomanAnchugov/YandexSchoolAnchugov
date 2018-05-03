@@ -126,13 +126,13 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
     }
 
 
-    public void setCurrentImage(int position){
+    private void setCurrentImage(int position){
         viewPager.setCurrentItem(position, true);
         displayImageInfo(this.position);
     }
 
     //обновление информации о фотографии
-    public void displayImageInfo(int position){
+    private void displayImageInfo(int position){
         this.position = position;
         imagesCountTextView.setText(getResources().getString(R.string.slider_position, (position + 1), galleryItems.size()));
 
@@ -252,7 +252,7 @@ public class SliderDialogFragment extends DialogFragment implements View.OnClick
         }
     }
 
-    ViewPager.OnPageChangeListener  viewPagerChangeListener = new ViewPager.OnPageChangeListener() {
+    private ViewPager.OnPageChangeListener  viewPagerChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 

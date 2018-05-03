@@ -41,7 +41,7 @@ public class GalleryItem implements Parcelable {
         this.date = resource.getCreated().toString();
     }
 
-    protected GalleryItem(Parcel in) {
+    private GalleryItem(Parcel in) {
         name = in.readString();
         path = in.readString();
         etag = in.readString();
