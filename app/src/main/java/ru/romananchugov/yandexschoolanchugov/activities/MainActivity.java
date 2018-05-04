@@ -28,11 +28,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.yandex.disk.rest.Credentials;
 import com.yandex.disk.rest.json.Link;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity
     public static final String AUTH_URL = "https://oauth.yandex.ru/authorize?response_type=token&client_id=" + CLIENT_ID;
     public static final String USERNAME = "ymra.username";
     public static final String TOKEN = "ymra.token";
+    public static final String GALLERY_LIST = "ymra.gallery";
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
 
@@ -466,5 +469,28 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String token = preferences.getString(TOKEN, null);
         return token;
+    }
+
+    public ArrayList<GalleryItem> getGalleryItems(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Gson gson = new Gson();
+        if(preferences.contains(GALLERY_LIST)){
+            String jsonList = preferences.getString(GALLERY_LIST, null);
+            GalleryItem[] items = gson.fromJson(jsonList, GalleryItem[].class);
+            return new ArrayList<>(Arrays.asList(items));
+        }else{
+            return null;
+        }
+    }
+
+    public void saveGalleryItems(ArrayList<GalleryItem> galleryItems){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        Gson gson = new Gson();
+        String jsonItems = gson.toJson(galleryItems);
+        editor.putString(GALLERY_LIST, jsonItems);
+        editor.apply();
+        editor.commit();
     }
 }

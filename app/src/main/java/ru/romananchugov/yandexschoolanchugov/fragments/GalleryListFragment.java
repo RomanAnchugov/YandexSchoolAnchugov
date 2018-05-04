@@ -77,7 +77,12 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.gallery_list_fragment, container, false);
 
-        galleryItems = new ArrayList<>();
+        if(activity.getGalleryItems() != null) {
+            galleryItems = activity.getGalleryItems();
+        }else{
+            galleryItems = new ArrayList<>();
+        }
+
         recyclerView = v.findViewById(R.id.gallery_recycler_view);
         adapter = new GalleryListAdapter(activity, galleryItems);
 
@@ -182,6 +187,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         }
 
         galleryItems.addAll(galleryItemList);
+        activity.saveGalleryItems((ArrayList<GalleryItem>) galleryItems);
         adapter.notifyAdapterDataSetChanged();
     }
 
