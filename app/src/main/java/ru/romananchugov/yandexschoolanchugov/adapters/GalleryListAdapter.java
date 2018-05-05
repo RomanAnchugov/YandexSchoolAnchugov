@@ -138,8 +138,9 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
     //по идее нужно загружать миниатюры, но ни глайд, ни ретрофит не хотят грузить картинки
     //с сылки для previewImage
     private void glideLoading(int position, GalleryListAdapter.ViewHolder holder) {
-                Glide
-                    .with(holder.imageView)
+        if(galleryItems.size() > position) {
+            Glide
+                    .with(activity)
                     .load(galleryItems.get(position).getDownloadLink())
                     .apply(new RequestOptions()
                             .error(R.drawable.ic_refresh)
@@ -148,6 +149,7 @@ public class GalleryListAdapter extends RecyclerView.Adapter<GalleryListAdapter.
                             .timeout(60000)
                     )
                     .into(holder.imageView).getRequest();
+        }
     }
 
     //остановка загрузки всех ссылок

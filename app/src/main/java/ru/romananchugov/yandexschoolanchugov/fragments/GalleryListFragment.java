@@ -35,13 +35,13 @@ import static ru.romananchugov.yandexschoolanchugov.utils.Constants.ADD_PHOTO_DI
 
 /**
  * Created by romananchugov on 07.04.2018.
- *
+ * <p>
  * Фрагмент главноей страницы галереи
  */
 
 @SuppressLint("ValidFragment")
 public class GalleryListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<GalleryItem>>
-        ,SwipeRefreshLayout.OnRefreshListener {
+        , SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = GalleryListAdapter.class.getSimpleName();
 
     private Credentials credentials;
@@ -54,10 +54,11 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     private MainActivity activity;
 
 
-    private GalleryListFragment(MainActivity activity){
+    private GalleryListFragment(MainActivity activity) {
         this.activity = activity;
     }
-    public static GalleryListFragment newInstance(MainActivity activity){
+
+    public static GalleryListFragment newInstance(MainActivity activity) {
         GalleryListFragment f = new GalleryListFragment(activity);
         return f;
     }
@@ -76,12 +77,8 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.gallery_list_fragment, container, false);
-
-        if(activity.getGalleryItems() != null) {
-            galleryItems = activity.getGalleryItems();
-        }else{
-            galleryItems = new ArrayList<>();
-        }
+        
+        galleryItems = new ArrayList<>();
 
         recyclerView = v.findViewById(R.id.gallery_recycler_view);
         adapter = new GalleryListAdapter(activity, galleryItems);
@@ -100,7 +97,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
             }
         });
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3){
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3) {
             @Override
             public boolean canScrollVertically() {
                 return !activity.isSelectionMode();
@@ -108,7 +105,7 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         };
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener( new RecyclerView.OnScrollListener(){
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0 && fab.getVisibility() == View.VISIBLE) {
@@ -159,13 +156,13 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             activity.cancelSelectionMode();
         }
     }
 
     //открываем диалг для добавления фотографии
-    private void goToAddPhotoDialogFragment(){
+    private void goToAddPhotoDialogFragment() {
         activity.cancelSelectionMode();
         AddNewPhotoDialog
                 .newInstance(activity, getString(R.string.add_new_photo))
@@ -187,11 +184,11 @@ public class GalleryListFragment extends Fragment implements LoaderManager.Loade
         }
 
         galleryItems.addAll(galleryItemList);
-        activity.saveGalleryItems((ArrayList<GalleryItem>) galleryItems);
+        //activity.saveGalleryItems((ArrayList<GalleryItem>) galleryItems);
         adapter.notifyAdapterDataSetChanged();
     }
 
-    public void removeItem(GalleryItem item){
+    public void removeItem(GalleryItem item) {
         galleryItems.remove(item);
         adapter.notifyAdapterDataSetChanged();
     }
